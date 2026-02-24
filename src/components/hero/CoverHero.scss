@@ -1,0 +1,53 @@
+@use "../../styles/variables" as *;
+
+.cover-hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__inner {
+    width: min(1200px, 92vw);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+
+  &__title {
+    font-size: 42px;
+    margin-bottom: 20px;
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    button {
+      padding: 10px 14px;
+      border-radius: $radius-md;
+      border: 1px solid $border-light;
+      background: $bg-card;
+      color: $text-primary;
+      cursor: pointer;
+      transition: 0.2s;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.12);
+      }
+    }
+  }
+
+  &__canvas {
+    border-radius: $radius-lg;
+    overflow: hidden;
+    border: 1px solid $border-light;
+    height: 500px;
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  }
+}

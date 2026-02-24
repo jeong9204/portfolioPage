@@ -1,0 +1,16 @@
+@use "./variables" as *;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  background: $bg-dark;
+  color: $text-primary;
+}
+
+button {
+  font-family: inherit;
+}
