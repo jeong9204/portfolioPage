@@ -221,6 +221,35 @@ export default function CoverHero() {
     a.click();
   };
 
+  const resize = () => {
+    if (!canvasElRef.current || !canvasRef.current) return;
+
+    const dpr = window.devicePixelRatio || 1;
+
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    const canvasEl = canvasElRef.current;
+    const canvas = canvasRef.current;
+
+    // 내부 픽셀 크기
+    canvasEl.width = width * dpr;
+    canvasEl.height = height * dpr;
+
+    // 보이는 크기
+    canvasEl.style.width = `${width}px`;
+    canvasEl.style.height = `${height}px`;
+
+    canvas.setWidth(width * dpr);
+    canvas.setHeight(height * dpr);
+    canvas.setZoom(dpr);
+
+    canvas.requestRenderAll();
+  };
+
+  resize();
+  window.addEventListener("resize", resize);
+
   return (
     <section className="cover-hero">
       <div className="cover-hero__inner">
