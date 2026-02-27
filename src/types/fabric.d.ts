@@ -10,4 +10,5 @@ declare module "fabric/fabric-impl" {
   export type Canvas = any;
   export type Textbox = any;
   export type Rect = any;
+  export type Image = any;
 }

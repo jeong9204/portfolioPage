@@ -1,16 +1,50 @@
 @use "./variables" as *;
 
-* {
-  box-sizing: border-box;
+/* Pretendard Variable 웹폰트 로드 (fallback: Pretendard/system sans) */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css");
+
+/* Noonnu - KerisKeduLine (title 용) */
+@font-face {
+  font-family: "KerisKeduLine";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/2601-3@1.0/KERISKEDU_Line.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  // 작은 화면에서도 헤더 높이가 과도하게 커지지 않도록 유동값으로 관리한다.
+  --header-height: clamp(56px, 8vw, 64px);
+  --bg-page: #070a14;
+  --bg-gradient-1: rgba(79, 121, 255, 0.16);
+  --bg-gradient-2: rgba(0, 209, 178, 0.12);
+  --bg-gradient-3: rgba(75, 91, 222, 0.14);
+  --header-bg: rgba(7, 10, 20, 0.72);
+  --text-primary: rgba(255, 255, 255, 0.92);
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --border-light: rgba(255, 255, 255, 0.12);
+  --panel-bg: rgba(7, 10, 20, 0.55);
+  --panel-bg-strong: rgba(255, 255, 255, 0.16);
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg-page: #f4f7fb;
+  --bg-gradient-1: rgba(120, 160, 255, 0.22);
+  --bg-gradient-2: rgba(116, 222, 205, 0.2);
+  --bg-gradient-3: rgba(186, 173, 255, 0.2);
+  --header-bg: rgba(255, 255, 255, 0.8);
+  --text-primary: rgba(18, 22, 31, 0.92);
+  --text-secondary: rgba(18, 22, 31, 0.62);
+  --border-light: rgba(18, 22, 31, 0.16);
+  --panel-bg: rgba(255, 255, 255, 0.74);
+  --panel-bg-strong: rgba(18, 22, 31, 0.1);
+  color-scheme: light;
 }
 
 body {
-  margin: 0;
-  font-family: "Inter", sans-serif;
-  background: $bg-dark;
-  color: $text-primary;
-}
-
-button {
-  font-family: inherit;
+  font-family: "Pretendard Variable", "Pretendard", system-ui, -apple-system, sans-serif;
+  background: var(--bg-page);
+  color: var(--text-primary);
 }

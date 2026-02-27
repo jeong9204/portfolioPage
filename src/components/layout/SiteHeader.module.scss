@@ -1,0 +1,85 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  z-index: 20;
+  backdrop-filter: blur(10px);
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.inner {
+  width: min(1200px, 92vw);
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-size: clamp(13px, 2.2vw, 16px);
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: var(--text-primary);
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--text-primary);
+    outline-offset: 3px;
+  }
+}
+
+.themeButton {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid var(--border-light);
+  display: grid;
+  place-items: center;
+  background: var(--panel-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+
+  svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  &:hover {
+    background: var(--panel-bg-strong);
+  }
+}
+
+@media (max-width: 768px) {
+  .inner {
+    width: min(1200px, 94vw);
+  }
+
+  .logo {
+    letter-spacing: 0.06em;
+  }
+}
+
+@media (max-width: 480px) {
+  .themeButton {
+    width: 34px;
+    height: 34px;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
