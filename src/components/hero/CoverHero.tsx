@@ -204,6 +204,15 @@ export default function CoverHero({
         );
         if (!cw || !ch) return;
 
+        // 모바일 구간에서는 폰트 크기를 줄여 텍스트 겹침을 방지한다.
+        const isMobile = cw <= 768;
+        const titleFontSize = isMobile
+          ? Math.max(26, Math.min(34, Math.floor(cw * 0.07)))
+          : 42;
+        const subtitleFontSize = isMobile
+          ? Math.max(13, Math.min(16, Math.floor(cw * 0.03)))
+          : 18;
+
         const padX = Math.max(48, Math.floor(cw * 0.08));
         const top = Math.max(72, Math.floor(ch * 0.18));
 
@@ -211,16 +220,20 @@ export default function CoverHero({
           left: padX,
           top,
           width: Math.min(980, Math.floor(cw - padX * 2)),
+          fontSize: titleFontSize,
         });
+
+        // 타이틀 치수를 먼저 계산한 뒤 subtitle 시작 위치를 정하면 중첩을 피할 수 있다.
+        title.initDimensions?.();
+        const titleBottom = (title.top || 0) + title.getScaledHeight();
 
         subtitle.set({
           left: padX,
-          // 타이틀과의 간격을 줄여 subtitle을 약 20px 위로 올린다.
-          top: top + 70,
+          top: titleBottom + (isMobile ? 14 : 18),
           width: Math.min(900, Math.floor(cw - padX * 2)),
+          fontSize: subtitleFontSize,
         });
 
-        title.initDimensions?.();
         subtitle.initDimensions?.();
         c.requestRenderAll();
       };
@@ -454,50 +467,53 @@ export default function CoverHero({
           {/* <p className={styles.desc}>버튼을 클릭해 보세요</p> */}
 
           <div className={styles.buttons}>
-            <button
-              className={preset === "ux" ? styles.isOn : ""}
-              onClick={() => applyPreset("ux")}
-              disabled={!ready}
-            >
-              UI/UX
-            </button>
-            <button
-              className={preset === "performance" ? styles.isOn : ""}
-              onClick={() => applyPreset("performance")}
-              disabled={!ready}
-            >
-              Performance
-            </button>
-            <button
-              className={preset === "interaction" ? styles.isOn : ""}
-              onClick={() => applyPreset("interaction")}
-              disabled={!ready}
-            >
-              Interaction
-            </button>
-            {IMAGE_ASSETS.length > 0 &&
-              IMAGE_ASSETS.map((asset) => (
-                <button
-                  key={asset.src}
-                  className={styles.imageButton}
-                  onClick={() => addImageToCanvas(asset.src)}
-                  disabled={!ready}
-                  title={asset.fileName}
-                  aria-label={`${asset.fileName} 이미지 추가`}
-                >
-                  <img src={asset.src} alt="" />
-                  {/* <span>{asset.label}</span> */}
-                </button>
-              ))}
+            <div className={styles.primaryButtons}>
+              <button
+                className={preset === "ux" ? styles.isOn : ""}
+                onClick={() => applyPreset("ux")}
+                disabled={!ready}
+              >
+                UI/UX
+              </button>
+              <button
+                className={preset === "performance" ? styles.isOn : ""}
+                onClick={() => applyPreset("performance")}
+                disabled={!ready}
+              >
+                Performance
+              </button>
+              <button
+                className={preset === "interaction" ? styles.isOn : ""}
+                onClick={() => applyPreset("interaction")}
+                disabled={!ready}
+              >
+                Interaction
+              </button>
+              <button onClick={reset} disabled={!ready}>
+                Reset
+              </button>
+              <button onClick={exportPNG} disabled={!ready}>
+                Export PNG
+              </button>
+            </div>
 
-            <span className={styles.spacer} />
-
-            <button onClick={reset} disabled={!ready}>
-              Reset
-            </button>
-            <button onClick={exportPNG} disabled={!ready}>
-              Export PNG
-            </button>
+            {IMAGE_ASSETS.length > 0 && (
+              <div className={styles.imageButtons}>
+                {IMAGE_ASSETS.map((asset) => (
+                  <button
+                    key={asset.src}
+                    className={styles.imageButton}
+                    onClick={() => addImageToCanvas(asset.src)}
+                    disabled={!ready}
+                    title={asset.fileName}
+                    aria-label={`${asset.fileName} 이미지 추가`}
+                  >
+                    <img src={asset.src} alt="" />
+                    {/* <span>{asset.label}</span> */}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

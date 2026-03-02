@@ -25,13 +25,9 @@
 .track {
   position: relative;
   z-index: 1;
-  height: 200svh;
+  height: 300svh;
   transform: translateY(0);
   transition: transform 0.62s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.showAbout {
-  transform: translateY(-100svh);
 }
 
 .section {
@@ -47,31 +43,269 @@
 }
 
 .nextInner {
-  width: min(880px, 92vw);
+  width: min(1440px, 92vw);
   padding: clamp(28px, 6vw, 52px);
   border-radius: $radius-lg;
   border: 1px solid var(--border-light);
   background: var(--panel-bg);
+}
 
-  h2 {
-    margin: 8px 0 12px;
-    font-size: clamp(26px, 4.4vw, 44px);
-    line-height: 1.12;
+.kicker {
+  padding-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.portfolioSection {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: transparent;
+}
+
+.portfolioTitle {
+  margin: 0 0 10px;
+  font-size: clamp(26px, 4.4vw, 44px);
+  line-height: 1.1;
+}
+
+.portfolioDesc {
+  margin: 0 0 22px;
+  color: var(--text-secondary);
+  font-size: clamp(14px, 2vw, 17px);
+}
+
+.mediaGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.mediaCard {
+  min-height: 150px;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  background: var(--panel-bg);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
   }
 
   p {
     margin: 0;
     color: var(--text-secondary);
-    font-size: clamp(14px, 2vw, 17px);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  cursor: pointer;
+}
+
+.mediaViewport {
+  // 세로로 긴 이미지를 카드 안에서 클리핑해 hover/롱프레스 시 슬라이드시킨다.
+  --viewport-h: 220px;
+  height: var(--viewport-h);
+  overflow: hidden;
+  border-radius: 10px;
+  border: 1px solid var(--border-light);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.mediaImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: translateY(0);
+}
+
+// 데스크톱은 hover 시 자동 슬라이드.
+.mediaCard:hover .mediaImage,
+// 모바일은 롱프레스(active class) 시 자동 슬라이드.
+.mediaActive .mediaImage {
+  animation: media-slide-y 3.8s ease-in-out infinite alternate;
+}
+
+@keyframes media-slide-y {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    // 이미지 전체 높이 기준으로 viewport 높이만 남기고 위로 이동한다.
+    transform: translateY(calc(-100% + var(--viewport-h)));
   }
 }
 
-.kicker {
+.mediaModal {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.modalBackdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+}
+
+.modalContent {
+  position: relative;
+  z-index: 1;
+  width: min(980px, 94vw);
+  max-height: 88svh;
+  border-radius: 14px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-page);
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.modalClose {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  // 비디오 레이어 위로 올려 클릭이 항상 가능하도록 고정한다.
+  z-index: 3;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  border: 1px solid var(--border-light);
+  background: var(--panel-bg);
+  color: var(--text-primary);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modalMedia {
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  max-height: 72svh;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.modalImageScroll {
+  // 이미지가 세로로 길 경우 모달 내부에서 스크롤해 끝까지 볼 수 있게 한다.
+  min-height: 0;
+  width: 100%;
+  max-height: 72svh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  // 모바일 터치 스크롤을 컨테이너가 직접 처리하도록 지정한다.
+  touch-action: pan-y;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.modalImage {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.modalInfo {
+  padding: 12px 14px 14px;
+  border-top: 1px solid var(--border-light);
+
+  h3 {
+    margin: 0 0 6px;
+    font-size: 16px;
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.45;
+  }
+}
+
+.experienceList {
+  position: relative;
   margin: 0;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 12px;
   color: var(--text-secondary);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: 15px;
+    width: 1px;
+    height: calc(100% - 7px);
+    background-color: var(--bg-gradient-1);
+  }
+
+  li {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 20px;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 7px;
+      left: 12px;
+      width: 7px;
+      height: 7px;
+      border-radius: 100%;
+      background-color: #98b5fb;
+    }
+
+    .name {
+      margin-bottom: 8px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .title {
+      display: flex;
+      margin-bottom: 5px;
+      font-size: 13px;
+      line-height: 1.4em;
+
+      .year {
+        margin-right: 8px;
+      }
+
+      span {
+        display: block;
+        font-size: 11px;
+      }
+    }
+
+    p {
+      font-size: 12px;
+      line-height: 1.65em;
+      padding-right: 10px;
+      margin-top: 6px;
+
+      &.dot {
+        position: relative;
+        padding-left: 12px;
+        text-indent: -10px;
+        margin-top: 7px;
+
+        &:first-child {
+          margin-top: 0;
+        }
+      }
+    }
+  }
 }
 
 @media (max-width: 768px) {
@@ -83,10 +317,26 @@
     width: 100%;
     max-width: 94vw;
     padding: 24px 18px;
+    // 모바일에서 콘텐츠가 길어질 때 섹션 내부에서만 스크롤되게 제한한다.
+    max-height: calc(100svh - var(--header-height) - 32px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 
     h2 {
       font-size: clamp(24px, 8vw, 34px);
     }
+  }
+
+  .portfolioSection {
+    padding: 16px;
+  }
+
+  .mediaGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .mediaViewport {
+    --viewport-h: 200px;
   }
 }
 
@@ -94,5 +344,22 @@
   .nextInner {
     padding: 20px 14px;
     border-radius: 14px;
+  }
+
+  .mediaModal {
+    padding: 12px;
+  }
+
+  .modalContent {
+    width: 100%;
+    max-height: 92svh;
+  }
+
+  .modalMedia {
+    max-height: 68svh;
+  }
+
+  .modalImageScroll {
+    max-height: 68svh;
   }
 }

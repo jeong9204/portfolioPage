@@ -67,7 +67,6 @@
   // 실제 클릭이 필요한 버튼 그룹만 다시 포인터를 켠다.
   pointer-events: auto;
   display: flex;
-  flex-wrap: wrap;
   gap: 10px;
   margin-top: 8px;
 
@@ -94,6 +93,20 @@
       cursor: not-allowed;
     }
   }
+}
+
+.primaryButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.imageButtons {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
 }
 
 .isOn {
@@ -188,6 +201,10 @@
 }
 
 @media (max-width: 768px) {
+  .buttons {
+    flex-direction: column;
+  }
+
   .inner {
     width: 94vw;
     align-items: flex-end;
@@ -213,12 +230,24 @@
 
   .buttons {
     gap: 8px;
+  }
 
-    button {
-      flex: 1 1 calc(50% - 4px);
-      min-width: 0;
-      padding: 10px 12px;
-    }
+  .primaryButtons {
+    // 모바일에서 메인 버튼은 최대 2줄(3+2)로 끝나게 3열 그리드로 고정한다.
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .primaryButtons button {
+    min-width: 0;
+    padding: 10px 10px;
+    font-size: 13px;
+  }
+
+  .imageButtons {
+    // 이미지 버튼은 줄바꿈 대신 가로 스크롤 1줄로 유지한다.
+    flex-wrap: nowrap;
   }
 
   .imageButton {
@@ -241,15 +270,23 @@
 @media (max-width: 480px) {
   .inner {
     padding-bottom: 16px;
+    justify-content: center;
+    width: 100%;
+
+    .left {
+      width: 100%;
+      padding: 0 15px;
+    }
   }
 
-  .buttons button {
-    flex-basis: 100%;
+  .primaryButtons {
+    // 아주 작은 화면은 2열로 변경해도 메인 버튼은 2~3줄 내에서 정돈된다.
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .imageButton {
     flex-basis: auto !important;
-    width: 52px;
+    width: calc(25% - 8px);
     min-height: 52px !important;
   }
 }
