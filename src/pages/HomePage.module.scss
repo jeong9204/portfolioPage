@@ -35,10 +35,17 @@
   min-height: 100vh;
 }
 
+.sectionOffset {
+  // 고정 헤더에 가려지지 않게 섹션 상단 여백을 헤더 높이만큼 확보한다.
+  box-sizing: border-box;
+  padding-top: var(--header-height);
+}
+
 .nextSection {
   display: grid;
   place-items: center;
   padding: 24px;
+  padding-top: calc(var(--header-height) + 24px);
   background: transparent;
 }
 
@@ -62,6 +69,7 @@
   display: grid;
   place-items: center;
   padding: 24px;
+  padding-top: calc(var(--header-height) + 24px);
   background: transparent;
 }
 
@@ -88,13 +96,12 @@
   border-radius: 12px;
   border: 1px solid var(--border-light);
   background: var(--panel-bg);
-  padding: 14px;
+  padding: 14px 14px 25px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 
   h3 {
-    margin: 0 0 8px;
     font-size: 16px;
   }
 
@@ -235,6 +242,29 @@
   }
 }
 
+.modalLinkButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border-light);
+  background: var(--panel-bg);
+  color: var(--text-primary);
+  font-size: 13px;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background: var(--panel-bg-strong);
+    transform: translateY(-1px);
+  }
+}
+
 .experienceList {
   position: relative;
   margin: 0;
@@ -309,8 +339,14 @@
 }
 
 @media (max-width: 768px) {
+  .sectionOffset {
+    // 모바일은 터치 여유를 위해 헤더 높이에 소폭 여백을 더한다.
+    padding-top: calc(var(--header-height) + 6px);
+  }
+
   .nextSection {
     padding: 16px;
+    padding-top: calc(var(--header-height) + 16px);
   }
 
   .nextInner {
@@ -329,6 +365,7 @@
 
   .portfolioSection {
     padding: 16px;
+    padding-top: calc(var(--header-height) + 16px);
   }
 
   .mediaGrid {

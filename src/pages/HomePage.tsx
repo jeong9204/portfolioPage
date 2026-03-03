@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import CoverHero from "../components/hero/CoverHero";
 import SiteHeader from "../components/layout/SiteHeader";
-import media01 from "../assets/images/KakaoTalk_Photo_2026-02-28-00-28-05.png";
-import media02 from "../assets/images/KakaoTalk_Photo_2026-02-28-00-28-12.png";
-import media03 from "../assets/images/KakaoTalk_Photo_2026-02-28-00-28-19.png";
-import media04 from "../assets/images/KakaoTalk_Photo_2026-02-28-00-28-26.png";
+import loginimg from "../assets/portfolio-images/loginpage.png";
+import writerimg from "../assets/portfolio-images/writerpage.png";
+import mainimg from "../assets/portfolio-images/mainpage.png";
+import publishingimg1 from "../assets/portfolio-images/publishingpage1.png";
+import publishingimg2 from "../assets/portfolio-images/publishingpage2.png";
 import styles from "./HomePage.module.scss";
 
 // 초기 테마 판별 유틸.
@@ -25,51 +26,95 @@ type PortfolioItem = {
   type: "image" | "video";
   src: string;
   poster?: string;
+  // 포트폴리오 상세 이동 링크가 있을 때만 모달 하단에 버튼을 노출한다.
+  link?: string;
+  linkLabel?: string;
 };
+
+const SECTION_HASHES = ["#main", "#experience", "#portfolio"] as const;
+
+const getSectionIndexFromHash = (hash: string) => {
+  const normalized = hash.toLowerCase();
+  const index = SECTION_HASHES.findIndex((item) => item === normalized);
+  return index >= 0 ? index : 0;
+};
+
+const getPortfolioItemById = (id: string | null) =>
+  id ? (PORTFOLIO_ITEMS.find((item) => item.id === id) ?? null) : null;
+
+// 저장소 용량/푸시 제한을 피하기 위해 데모 영상은 외부 URL을 사용한다.
+const VIDEO_SOURCES = {
+  writer:
+    "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+  main: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm",
+} as const;
 
 const PORTFOLIO_ITEMS = [
   {
-    id: "media-01",
-    title: "Project Image",
-    description: "이미지 기반 인터랙션 작업 예시",
+    id: "Project-01",
+    title: "Google·Facebook 소셜 로그인",
+    description:
+      "Google·Facebook 소셜 로그인을 OAuth 기반으로 연동하고, 웹·앱 환경을 고려한 인증 플로우 및 앱 브릿지를 포함해 계정 연결·해제 전반의 인증 라이프사이클을 관리했습니다.",
     type: "image",
-    src: media01,
+    src: loginimg,
+    // 실제 배포 링크가 생기면 URL만 교체하면 된다.
+    link: "https://www.joara.com/auth/login?return_url=%2Fmain%2Frecommend",
+    linkLabel: "로그인페이지 보기",
   },
   {
-    id: "media-02",
-    title: "Project Image",
-    description: "에디터 화면 UI 개선 작업",
-    type: "image",
-    src: media02,
-  },
-  {
-    id: "media-03",
-    title: "Project Image",
-    description: "Canvas 편집 흐름 구축",
-    type: "image",
-    src: media03,
-  },
-  {
-    id: "media-04",
-    title: "Project Image",
-    description: "다크/라이트 대응 UI",
-    type: "image",
-    src: media04,
-  },
-  {
-    id: "media-05",
-    title: "Project Video",
-    description: "샘플 동영상 재생 테스트",
+    id: "Project-02",
+    title: "작품 표지관리",
+    description:
+      "기존 단순 이미지 업로드 방식의 표현 한계를 개선하기 위해, Fabric.js와 react-image-crop을 활용한 작품 표지 제작 페이지를 개발하고 이미지 편집·텍스트 추가 등 사용자 주도의 편집 인터랙션을 구현했습니다.",
     type: "video",
-    // 데모용 외부 샘플 영상. 추후 실제 파일로 교체 가능.
-    src: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-    poster: media02,
+    src: VIDEO_SOURCES.writer,
+    poster: writerimg,
+    link: "https://www.joara.com/latestbooks?store=series&orderby=redate",
+    linkLabel: "사용중인 표지 리스트 보기",
+  },
+  {
+    id: "Project-03",
+    title: "메인화면 리뉴얼",
+    description:
+      "리뉴얼 과정에서 UI 구조 변경으로 인한 재작업을 줄이기 위해, 초기 단계에서 React 기반 UI 컴포넌트 구조를 설계하고 퍼블리싱·반응형·다크모드 대응을 선행 구축하여 확장성과 유지보수가 용이한 UI 구조를 마련했습니다.",
+    type: "video",
+    src: VIDEO_SOURCES.main,
+    poster: mainimg,
+    link: "https://www.joara.com/",
+    linkLabel: "홈페이지 보기",
+  },
+  {
+    id: "Project-04",
+    title: "퍼블리싱 홈페이지1",
+    description: "한양대학교 발달의학센터",
+    type: "image",
+    src: publishingimg1,
+    link: "http://dmc.hyumc.com/index.php",
+    linkLabel: "홈페이지 보기",
+  },
+  {
+    id: "Project-05",
+    title: "퍼블리싱 홈페이지2",
+    description: "(주)유성소프트",
+    type: "image",
+    src: publishingimg2,
+    link: "https://ussoft.co.kr/index.php",
+    linkLabel: "홈페이지 보기",
   },
 ] as const satisfies readonly PortfolioItem[];
 
 export default function HomePage() {
-  // 섹션 전환 상태: 0=Hero, 1=Experience, 2=Portfolio.
-  const [sectionIndex, setSectionIndex] = useState(0);
+  // 섹션 전환 상태: 0=Main, 1=Experience, 2=Portfolio.
+  const [sectionIndex, setSectionIndex] = useState(() => {
+    if (typeof window === "undefined") return 0;
+    // media 쿼리로 직접 접근하면 포트폴리오 섹션부터 보여준다.
+    const mediaFromQuery = new URLSearchParams(window.location.search).get(
+      "media",
+    );
+    if (getPortfolioItemById(mediaFromQuery)) return 2;
+    // 새로고침 시 URL 해시를 읽어 해당 섹션에서 시작한다.
+    return getSectionIndexFromHash(window.location.hash);
+  });
   // 다크 여부를 boolean 상태로 유지해 스타일 토큰 분기와 직접 연결한다.
   const [isDark, setIsDark] = useState(getInitialTheme);
 
@@ -82,80 +127,105 @@ export default function HomePage() {
   const touchScrollHostRef = useRef<HTMLElement | null>(null);
   const longPressTimerRef = useRef<number | null>(null);
   const [activeMediaId, setActiveMediaId] = useState<string | null>(null);
-  const [selectedMedia, setSelectedMedia] = useState<PortfolioItem | null>(null);
+  const [selectedMedia, setSelectedMedia] = useState<PortfolioItem | null>(
+    () => {
+      if (typeof window === "undefined") return null;
+      // URL에 media 쿼리가 있으면 해당 포트폴리오 모달을 초기 오픈한다.
+      const mediaFromQuery = new URLSearchParams(window.location.search).get(
+        "media",
+      );
+      return getPortfolioItemById(mediaFromQuery);
+    },
+  );
 
-  const moveToNext = () => {
+  const moveToNext = useCallback(() => {
     setSectionIndex((prev) => Math.min(prev + 1, 2));
-  };
+  }, []);
 
-  const moveToPrev = () => {
+  const moveToPrev = useCallback(() => {
     setSectionIndex((prev) => Math.max(prev - 1, 0));
-  };
+  }, []);
 
   // 이벤트 타겟에서 가장 가까운 "내부 스크롤 허용" 컨테이너를 찾는다.
-  const findScrollableHost = (target: EventTarget | null) => {
+  const findScrollableHost = useCallback((target: EventTarget | null) => {
     if (!(target instanceof Element)) return null;
     return target.closest('[data-scrollable="true"]') as HTMLElement | null;
-  };
+  }, []);
 
   // 방향(deltaY) 기준으로 내부 컨테이너가 아직 더 스크롤 가능한지 확인한다.
-  const canScrollInside = (el: HTMLElement, deltaY: number) => {
+  const canScrollInside = useCallback((el: HTMLElement, deltaY: number) => {
     if (deltaY > 0) return el.scrollTop + el.clientHeight < el.scrollHeight;
     if (deltaY < 0) return el.scrollTop > 0;
     return false;
-  };
+  }, []);
 
   // native WheelEvent를 직접 사용해 휠 입력을 섹션 전환 로직으로 변환한다.
-  const handleWheel = (event: globalThis.WheelEvent) => {
-    // 모달이 열려 있을 땐 배경 섹션 전환을 잠시 막는다.
-    if (selectedMedia) return;
-    // 내부 스크롤 영역에서 아직 스크롤 여지가 있으면 섹션 전환보다 내부 스크롤을 우선한다.
-    const scrollHost = findScrollableHost(event.target);
-    if (scrollHost && canScrollInside(scrollHost, event.deltaY)) return;
+  const handleWheel = useCallback(
+    (event: globalThis.WheelEvent) => {
+      // 모달이 열려 있을 땐 배경 섹션 전환을 잠시 막는다.
+      if (selectedMedia) return;
+      // 내부 스크롤 영역에서 아직 스크롤 여지가 있으면 섹션 전환보다 내부 스크롤을 우선한다.
+      const scrollHost = findScrollableHost(event.target);
+      if (scrollHost && canScrollInside(scrollHost, event.deltaY)) return;
 
-    event.preventDefault();
+      event.preventDefault();
 
-    if (wheelLockRef.current) return;
+      if (wheelLockRef.current) return;
 
-    wheelAccumRef.current += event.deltaY;
-    if (Math.abs(wheelAccumRef.current) < 56) return;
+      wheelAccumRef.current += event.deltaY;
+      if (Math.abs(wheelAccumRef.current) < 56) return;
 
-    if (wheelAccumRef.current > 0) moveToNext();
-    if (wheelAccumRef.current < 0) moveToPrev();
+      if (wheelAccumRef.current > 0) moveToNext();
+      if (wheelAccumRef.current < 0) moveToPrev();
 
-    wheelAccumRef.current = 0;
-    wheelLockRef.current = true;
-    window.setTimeout(() => {
-      wheelLockRef.current = false;
-    }, 650);
-  };
+      wheelAccumRef.current = 0;
+      wheelLockRef.current = true;
+      window.setTimeout(() => {
+        wheelLockRef.current = false;
+      }, 650);
+    },
+    [
+      selectedMedia,
+      findScrollableHost,
+      canScrollInside,
+      moveToNext,
+      moveToPrev,
+    ],
+  );
 
-  const handleTouchStart = (event: globalThis.TouchEvent) => {
-    const touch = event.touches[0];
-    if (!touch) return;
-    touchStartYRef.current = touch.clientY;
-    touchScrollHostRef.current = findScrollableHost(event.target);
-  };
+  const handleTouchStart = useCallback(
+    (event: globalThis.TouchEvent) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      touchStartYRef.current = touch.clientY;
+      touchScrollHostRef.current = findScrollableHost(event.target);
+    },
+    [findScrollableHost],
+  );
 
-  const handleTouchEnd = (event: globalThis.TouchEvent) => {
-    if (selectedMedia) return;
-    const startY = touchStartYRef.current;
-    const touch = event.changedTouches[0];
-    touchStartYRef.current = null;
-    if (startY === null || !touch) return;
+  const handleTouchEnd = useCallback(
+    (event: globalThis.TouchEvent) => {
+      if (selectedMedia) return;
+      const startY = touchStartYRef.current;
+      const touch = event.changedTouches[0];
+      touchStartYRef.current = null;
+      if (startY === null || !touch) return;
 
-    const deltaY = touch.clientY - startY;
-    if (Math.abs(deltaY) < 50) return;
+      const deltaY = touch.clientY - startY;
+      if (Math.abs(deltaY) < 50) return;
 
-    // 손가락이 위로 이동(deltaY < 0)하면 콘텐츠는 아래로 이동(다음 섹션) 의도로 해석한다.
-    const intendedScrollDelta = deltaY < 0 ? 1 : -1;
-    const scrollHost = touchScrollHostRef.current;
-    touchScrollHostRef.current = null;
-    if (scrollHost && canScrollInside(scrollHost, intendedScrollDelta)) return;
+      // 손가락이 위로 이동(deltaY < 0)하면 콘텐츠는 아래로 이동(다음 섹션) 의도로 해석한다.
+      const intendedScrollDelta = deltaY < 0 ? 1 : -1;
+      const scrollHost = touchScrollHostRef.current;
+      touchScrollHostRef.current = null;
+      if (scrollHost && canScrollInside(scrollHost, intendedScrollDelta))
+        return;
 
-    if (deltaY < 0) moveToNext();
-    if (deltaY > 0) moveToPrev();
-  };
+      if (deltaY < 0) moveToNext();
+      if (deltaY > 0) moveToPrev();
+    },
+    [selectedMedia, canScrollInside, moveToNext, moveToPrev],
+  );
 
   const handleMediaTouchStart = (mediaId: string) => {
     if (longPressTimerRef.current) {
@@ -194,7 +264,7 @@ export default function HomePage() {
       el.removeEventListener("touchstart", handleTouchStart);
       el.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [selectedMedia]);
+  }, [selectedMedia, handleWheel, handleTouchStart, handleTouchEnd]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -205,6 +275,40 @@ export default function HomePage() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      // 주소창 해시(뒤로가기/직접 입력 포함)가 바뀌면 섹션 인덱스를 동기화한다.
+      setSectionIndex(getSectionIndexFromHash(window.location.hash));
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    const nextHash = SECTION_HASHES[sectionIndex] ?? SECTION_HASHES[0];
+    if (window.location.hash === nextHash) return;
+    // 섹션 이동마다 history를 과도하게 쌓지 않도록 replaceState를 사용한다.
+    window.history.replaceState(null, "", nextHash);
+  }, [sectionIndex]);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    // 모달 오픈 상태를 URL 쿼리(media)로 동기화해 직접 링크 공유가 가능하게 만든다.
+    if (selectedMedia) {
+      url.searchParams.set("media", selectedMedia.id);
+    } else {
+      url.searchParams.delete("media");
+    }
+    window.history.replaceState(
+      null,
+      "",
+      `${url.pathname}${url.search}${url.hash}`,
+    );
+  }, [selectedMedia]);
 
   // 현재 테마를 문서 루트와 localStorage에 동기화한다.
   // 헤더 버튼 클릭 시 전체 페이지 색상 토큰이 즉시 바뀐다.
@@ -219,7 +323,7 @@ export default function HomePage() {
       <SiteHeader
         isDark={isDark}
         onToggleTheme={() => setIsDark((prev) => !prev)}
-        // 로고 클릭 시 항상 Hero 섹션으로 복귀한다.
+        // 로고 클릭 시 항상 Main 섹션으로 복귀한다.
         onLogoClick={() => setSectionIndex(0)}
       />
       <div
@@ -230,11 +334,12 @@ export default function HomePage() {
           className={styles.section}
           onScrollDown={moveToNext}
           isDark={isDark}
+          isActive={sectionIndex === 0}
         />
 
         <section
           id="home-next-section"
-          className={`${styles.section} ${styles.nextSection}`}
+          className={`${styles.section} ${styles.sectionOffset} ${styles.nextSection}`}
         >
           <div className={styles.nextInner} data-scrollable="true">
             <p className={styles.kicker}>Experience</p>
@@ -249,11 +354,9 @@ export default function HomePage() {
                     <span>Frontend Developer</span>
                   </div>
                   <p className={styles.dot}>
-                    - 리뉴얼 과정에서 UI 구조 변경으로 인한 재작업을 줄이기
-                    위해, 초기 단계에서 React 기반 UI 컴포넌트 구조를 설계하고
-                    <br />
-                    퍼블리싱·반응형·다크모드 대응을 선행 구축하여 확장성과
-                    유지보수가 용이한 UI 구조를 마련했습니다.
+                    - Google·Facebook 소셜 로그인을 OAuth 기반으로 연동하고,
+                    웹·앱 환경을 고려한 인증 플로우 및 앱 브릿지를 포함해 계정
+                    연결·해제 전반의 인증 라이프사이클을 관리했습니다.
                   </p>
                   <p className={styles.dot}>
                     - 기존 단순 이미지 업로드 방식의 표현 한계를 개선하기 위해,
@@ -271,9 +374,11 @@ export default function HomePage() {
                     CloudFront 및 cf-image 평균 비용을 50% 이상 절감했습니다.
                   </p>
                   <p className={styles.dot}>
-                    - Google·Facebook 소셜 로그인을 OAuth 기반으로 연동하고,
-                    웹·앱 환경을 고려한 인증 플로우 및 앱 브릿지를 포함해 계정
-                    연결·해제 전반의 인증 라이프사이클을 관리했습니다.
+                    - 리뉴얼 과정에서 UI 구조 변경으로 인한 재작업을 줄이기
+                    위해, 초기 단계에서 React 기반 UI 컴포넌트 구조를 설계하고
+                    <br />
+                    퍼블리싱·반응형·다크모드 대응을 선행 구축하여 확장성과
+                    유지보수가 용이한 UI 구조를 마련했습니다.
                   </p>
                 </div>
               </li>
@@ -284,9 +389,21 @@ export default function HomePage() {
                     <div className={styles.year}>2019.05 - 2022.04 (3년)</div>
                     <span>Web Publisher</span>
                   </div>
-                  <p>
-                    웹·모바일 환경에서 적응형·반응형 UI 퍼블리싱을 수행하며,
-                    다양한 디바이스 해상도와 브라우저 대응 경험을 쌓았습니다.
+                  <p className="dot">
+                    - 웹·모바일 환경에서 적응형·반응형 UI 퍼블리싱을 수행하고
+                    크로스브라우징 대응을 진행했습니다.
+                  </p>
+                  <p className="dot">
+                    - 유지보수 업무를 통해 기존 코드를 분석하고 기능 수정 및
+                    개선을 수행했습니다.
+                  </p>
+                  <p className="dot">
+                    - 고객과의 직접 커뮤니케이션을 통해 요구사항을 구조화하고
+                    기능을 정의했습니다.
+                  </p>
+                  <p className="dot">
+                    - 디자이너 경험을 기반으로 UI 수정 사항을 시각적·구조적으로
+                    반영했습니다.
                   </p>
                 </div>
               </li>
@@ -300,8 +417,8 @@ export default function HomePage() {
                     <span>Web Publisher</span>
                   </div>
                   <p>
-                    웹·모바일 UI 퍼블리싱 전반을 담당하며 실무 경험을
-                    축적했습니다.
+                    웹·모바일 환경에서 적응형·반응형 UI 퍼블리싱을 수행하며,
+                    다양한 디바이스 해상도와 브라우저 대응 경험을 쌓았습니다.
                   </p>
                 </div>
               </li>
@@ -309,7 +426,9 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className={`${styles.section} ${styles.portfolioSection}`}>
+        <section
+          className={`${styles.section} ${styles.sectionOffset} ${styles.portfolioSection}`}
+        >
           <div className={styles.nextInner} data-scrollable="true">
             <p className={styles.kicker}>Portfolio</p>
             <div className={styles.mediaGrid}>
@@ -325,7 +444,11 @@ export default function HomePage() {
                   <div className={styles.mediaViewport}>
                     <img
                       // 비디오 카드는 영상 src 대신 poster를 미리보기로 사용해야 썸네일이 정상 노출된다.
-                      src={item.type === "video" ? (item.poster ?? item.src) : item.src}
+                      src={
+                        item.type === "video"
+                          ? (item.poster ?? item.src)
+                          : item.src
+                      }
                       alt={item.title}
                       className={styles.mediaImage}
                     />
@@ -365,6 +488,8 @@ export default function HomePage() {
                 controls
                 // 비디오 모달 오픈 즉시 재생되도록 자동 재생을 켠다.
                 autoPlay
+                // 자동 재생 정책 대응을 위해 초기 음소거 상태로 재생한다.
+                muted
                 playsInline
                 // 모달 내부 휠이 배경 섹션 전환으로 전달되지 않게 전파를 막는다.
                 onWheel={(event) => event.stopPropagation()}
@@ -387,6 +512,16 @@ export default function HomePage() {
             <div className={styles.modalInfo}>
               <h3>{selectedMedia.title}</h3>
               <p>{selectedMedia.description}</p>
+              {selectedMedia.link && (
+                <a
+                  className={styles.modalLinkButton}
+                  href={selectedMedia.link}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  {selectedMedia.linkLabel ?? "링크 이동"}
+                </a>
+              )}
             </div>
           </div>
         </div>

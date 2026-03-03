@@ -20,6 +20,7 @@ type CoverHeroProps = {
   className?: string;
   onScrollDown?: () => void;
   isDark: boolean;
+  isActive?: boolean;
 };
 
 // Record<PresetKey, ...>를 사용하면
@@ -41,13 +42,15 @@ const PRESETS: Record<PresetKey, { title: string; subtitle: string }> = {
 };
 
 // 타이틀은 요청한 Noonnu 폰트(KerisKeduLine)로 분리 적용한다.
-const HERO_TITLE_FONT_FAMILY = '"KerisKeduLine", "Pretendard", system-ui, sans-serif';
+const HERO_TITLE_FONT_FAMILY =
+  '"KerisKeduLine", "Pretendard", system-ui, sans-serif';
 // 본문(서브타이틀)은 가독성을 위해 기존 Pretendard 계열을 유지한다.
-const HERO_BODY_FONT_FAMILY = '"Pretendard", system-ui, -apple-system, sans-serif';
+const HERO_BODY_FONT_FAMILY =
+  '"Pretendard", system-ui, -apple-system, sans-serif';
 
-// assets/images 폴더의 이미지를 빌드 시점에 자동 수집한다.
+// assets/hero-images 폴더의 이미지를 빌드 시점에 자동 수집한다.
 const IMAGE_ASSETS = Object.entries(
-  import.meta.glob("../../assets/images/*.{png,jpg,jpeg,webp,svg,gif}", {
+  import.meta.glob("../../assets/hero-images/*.{png,jpg,jpeg,webp,svg,gif}", {
     eager: true,
     import: "default",
   }),
@@ -67,6 +70,7 @@ export default function CoverHero({
   className,
   onScrollDown,
   isDark,
+  isActive = true,
 }: CoverHeroProps) {
   // DOM 요소 ref 타입을 명시하면 .current 사용 시 자동완성이 정확해지고,
   // null 체크가 강제되어 런타임 오류를 줄일 수 있다.
@@ -86,6 +90,8 @@ export default function CoverHero({
   const [ready, setReady] = useState(false);
   // 제네릭 <PresetKey>로 상태 타입을 제한하면 잘못된 문자열 set을 방지할 수 있다.
   const [preset, setPreset] = useState<PresetKey>("ux");
+  // 메인 배지 클릭 시 바텀시트 형태의 소개 팝업을 연다.
+  const [isProfileSheetOpen, setIsProfileSheetOpen] = useState(false);
 
   // fabric 내부 백버퍼 크기 대신 실제 화면에 보이는 좌표계를 반환한다.
   // 반환 객체 타입은 TS가 추론하지만, 입력 타입(Canvas)은 명시해 재사용 안정성을 높인다.
@@ -317,6 +323,26 @@ export default function CoverHero({
     c.requestRenderAll();
   }, [isDark]);
 
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsProfileSheetOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Hero 섹션을 벗어나면 바텀시트를 자동으로 닫아 다음 섹션과 겹치지 않게 한다.
+    if (!isActive) {
+      setIsProfileSheetOpen(false);
+    }
+  }, [isActive]);
+
   const reset = () => {
     const c = canvasRef.current as unknown as Canvas | null;
     const bg = bgRef.current as unknown as FabricRect | null;
@@ -457,14 +483,13 @@ export default function CoverHero({
     >
       <div className={styles.inner}>
         <div className={styles.left}>
-          <div className={styles.badge}>YEZZI Front-End Developer</div>
-
-          {/* <h1 className={styles.title}>
-            표지 제작기를 활용한{" "}
-            <span className={styles.emph}>인터랙티브 대문</span>
-          </h1> */}
-
-          {/* <p className={styles.desc}>버튼을 클릭해 보세요</p> */}
+          <button
+            type="button"
+            className={styles.badge}
+            onClick={() => setIsProfileSheetOpen(true)}
+          >
+            YEZZI Front-End Developer
+          </button>
 
           <div className={styles.buttons}>
             <div className={styles.primaryButtons}>
@@ -530,6 +555,68 @@ export default function CoverHero({
         <canvas ref={canvasElRef} />
         {!ready && <div className={styles.loading}>Loading…</div>}
       </div>
+
+      {isProfileSheetOpen && (
+        <div
+          className={styles.profileSheetWrap}
+          role="dialog"
+          aria-modal="true"
+        >
+          <button
+            type="button"
+            className={styles.profileSheetBackdrop}
+            aria-label="소개 팝업 닫기"
+            onClick={() => setIsProfileSheetOpen(false)}
+          />
+
+          <section
+            className={styles.profileSheet}
+            // HomePage의 섹션 전환 로직에서 "내부 스크롤 영역"으로 인식되게 표시한다.
+            data-scrollable="true"
+            // 바텀시트 내부 터치/휠 이벤트가 상위 섹션 전환 핸들러로 전파되지 않게 막는다.
+            onTouchStart={(event) => event.stopPropagation()}
+            onTouchMove={(event) => event.stopPropagation()}
+            onTouchEnd={(event) => event.stopPropagation()}
+            onWheel={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className={styles.profileSheetClose}
+              aria-label="닫기"
+              onClick={() => setIsProfileSheetOpen(false)}
+            >
+              ×
+            </button>
+
+            <p className={styles.profileSheetKicker}>INTRO</p>
+            <p className={styles.profileSheetBody}>
+              유지보수 중심의 에이전시 환경에서 커리어를 시작해, 디자이너와
+              퍼블리셔 경험을 거쳐 프론트엔드 개발자로 전환했습니다. 다양한
+              역할을 경험하며 서비스가 기획되고 구현되어 운영되기까지의 전
+              과정을 이해하게 되었고, 이는 현재 UI 구조 설계와 기능 개발 전반에
+              실질적인 기반이 되고 있습니다. <br />
+              <br />
+              부트캠프 과정을 통해 프론트엔드 역량을 체계화한 이후, 웹소설
+              플랫폼 서비스 기업에 합류하여 React 기반 실서비스 개발을 담당하고
+              있습니다. UI 초기 설계, 기능 구현, 운영 이슈 대응 및 고도화까지
+              수행하며 단순 기능 구현을 넘어 서비스 안정성과 확장성을 고려한
+              구조 설계를 실무에 적용해왔습니다. 특히 인증, 열람, 결제 등
+              플랫폼의 주요 사용자 흐름을 이해하고 이를 기반으로 UI 구조를
+              개선하며 서비스 전반의 사용자 경험과 안정성을 함께 고려해왔습니다.
+              <br />
+              <br />
+              하이브리드(WebView) 환경에서 발생한 인증(OAuth) 및 세션 이슈를
+              분석하고 개선하며 서비스 안정성 향상에 기여했습니다. 사용자
+              인터랙션을 고려한 컴포넌트 설계와 유지보수가 가능한 구조를 만드는
+              것을 중요하게 생각합니다. <br />
+              <br />
+              앞으로도 사용자 흐름과 서비스 구조를 이해하는 프론트엔드
+              개발자로서, 복잡한 환경에서도 안정적으로 동작하는 구조를
+              설계하고자 합니다.
+            </p>
+          </section>
+        </div>
+      )}
     </section>
   );
 }

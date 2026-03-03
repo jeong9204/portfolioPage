@@ -26,3 +26,6 @@ dist-ssr
 .env
 .vscode
 *.tsbuildinfo
+
+# Local source videos (large raw files) are kept outside git history.
+src/assets/videos/*.mov
