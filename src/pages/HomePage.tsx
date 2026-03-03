@@ -6,6 +6,8 @@ import writerimg from "../assets/portfolio-images/writerpage.png";
 import mainimg from "../assets/portfolio-images/mainpage.png";
 import publishingimg1 from "../assets/portfolio-images/publishingpage1.png";
 import publishingimg2 from "../assets/portfolio-images/publishingpage2.png";
+import writervideo from "../assets/videos/writerpagevideo.mp4";
+import mainvideo from "../assets/videos/mainpagevideo.mp4";
 import styles from "./HomePage.module.scss";
 
 // 초기 테마 판별 유틸.
@@ -42,13 +44,6 @@ const getSectionIndexFromHash = (hash: string) => {
 const getPortfolioItemById = (id: string | null) =>
   id ? (PORTFOLIO_ITEMS.find((item) => item.id === id) ?? null) : null;
 
-// 저장소 용량/푸시 제한을 피하기 위해 데모 영상은 외부 URL을 사용한다.
-const VIDEO_SOURCES = {
-  writer:
-    "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-  main: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm",
-} as const;
-
 const PORTFOLIO_ITEMS = [
   {
     id: "Project-01",
@@ -67,7 +62,7 @@ const PORTFOLIO_ITEMS = [
     description:
       "기존 단순 이미지 업로드 방식의 표현 한계를 개선하기 위해, Fabric.js와 react-image-crop을 활용한 작품 표지 제작 페이지를 개발하고 이미지 편집·텍스트 추가 등 사용자 주도의 편집 인터랙션을 구현했습니다.",
     type: "video",
-    src: VIDEO_SOURCES.writer,
+    src: writervideo,
     poster: writerimg,
     link: "https://www.joara.com/latestbooks?store=series&orderby=redate",
     linkLabel: "사용중인 표지 리스트 보기",
@@ -78,7 +73,7 @@ const PORTFOLIO_ITEMS = [
     description:
       "리뉴얼 과정에서 UI 구조 변경으로 인한 재작업을 줄이기 위해, 초기 단계에서 React 기반 UI 컴포넌트 구조를 설계하고 퍼블리싱·반응형·다크모드 대응을 선행 구축하여 확장성과 유지보수가 용이한 UI 구조를 마련했습니다.",
     type: "video",
-    src: VIDEO_SOURCES.main,
+    src: mainvideo,
     poster: mainimg,
     link: "https://www.joara.com/",
     linkLabel: "홈페이지 보기",
