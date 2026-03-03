@@ -384,6 +384,12 @@ export default function HomePage() {
                     <div className={styles.year}>2019.05 - 2022.04 (3년)</div>
                     <span>Web Publisher</span>
                   </div>
+                  <div className={styles.title}>
+                    <div className={styles.year}>
+                      2014.11 - 2019.03 (4년 5개월)
+                    </div>
+                    <span>Web Publisher</span>
+                  </div>
                   <p className="dot">
                     - 웹·모바일 환경에서 적응형·반응형 UI 퍼블리싱을 수행하고
                     크로스브라우징 대응을 진행했습니다.
@@ -399,21 +405,6 @@ export default function HomePage() {
                   <p className="dot">
                     - 디자이너 경험을 기반으로 UI 수정 사항을 시각적·구조적으로
                     반영했습니다.
-                  </p>
-                </div>
-              </li>
-              <li>
-                <div className={styles.box}>
-                  <div className={styles.name}>주식회사쓰리애니아이앤시</div>
-                  <div className={styles.title}>
-                    <div className={styles.year}>
-                      2014.11 - 2019.03 (4년 5개월)
-                    </div>
-                    <span>Web Publisher</span>
-                  </div>
-                  <p>
-                    웹·모바일 환경에서 적응형·반응형 UI 퍼블리싱을 수행하며,
-                    다양한 디바이스 해상도와 브라우저 대응 경험을 쌓았습니다.
                   </p>
                 </div>
               </li>
