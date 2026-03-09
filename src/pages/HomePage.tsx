@@ -390,19 +390,19 @@ export default function HomePage() {
                     </div>
                     <span>Web Publisher</span>
                   </div>
-                  <p className="dot">
+                  <p className={styles.dot}>
                     - 웹·모바일 환경에서 적응형·반응형 UI 퍼블리싱을 수행하고
                     크로스브라우징 대응을 진행했습니다.
                   </p>
-                  <p className="dot">
+                  <p className={styles.dot}>
                     - 유지보수 업무를 통해 기존 코드를 분석하고 기능 수정 및
                     개선을 수행했습니다.
                   </p>
-                  <p className="dot">
+                  <p className={styles.dot}>
                     - 고객과의 직접 커뮤니케이션을 통해 요구사항을 구조화하고
                     기능을 정의했습니다.
                   </p>
-                  <p className="dot">
+                  <p className={styles.dot}>
                     - 디자이너 경험을 기반으로 UI 수정 사항을 시각적·구조적으로
                     반영했습니다.
                   </p>

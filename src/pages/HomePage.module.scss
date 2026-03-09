@@ -338,6 +338,23 @@
   }
 }
 
+@media (min-width: 769px) {
+  .experienceList {
+    li {
+      p.dot {
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        br {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
 @media (max-width: 768px) {
   .sectionOffset {
     // 모바일은 터치 여유를 위해 헤더 높이에 소폭 여백을 더한다.

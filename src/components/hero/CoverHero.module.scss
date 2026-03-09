@@ -249,6 +249,17 @@
     width: 100%;
     max-width: none;
   }
+
+  .primaryButtons {
+    // 태블릿/모바일에서는 메인 버튼 4개를 1줄 4열로 고정한다.
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .primaryButtons button {
+    min-width: 0;
+  }
 }
 
 .profileSheetClose {
@@ -353,15 +364,8 @@
     gap: 8px;
   }
 
-  .primaryButtons {
-    // 모바일에서 메인 버튼은 최대 2줄(3+2)로 끝나게 3열 그리드로 고정한다.
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-  }
-
   .primaryButtons button {
-    min-width: 0;
+    // 4열에서도 버튼 텍스트가 과하게 줄바꿈되지 않도록 패딩/폰트를 줄인다.
     padding: 10px 10px;
     font-size: 13px;
   }
@@ -401,13 +405,20 @@
   }
 
   .primaryButtons {
-    // 아주 작은 화면은 2열로 변경해도 메인 버튼은 2~3줄 내에서 정돈된다.
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    // 아주 작은 화면도 4열 1줄 구성을 유지한다.
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .imageButton {
     flex-basis: auto !important;
     width: calc(25% - 8px);
     min-height: 52px !important;
+  }
+}
+
+@media (max-width: 375px) {
+  .primaryButtons {
+    // 375px 이하에서는 버튼 가독성을 위해 2열로 전환한다.
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
