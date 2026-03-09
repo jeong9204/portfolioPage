@@ -422,6 +422,11 @@ export default function CoverHero({
     a.click();
   };
 
+  // Export 버튼 JSX를 주석 처리하면 exportPNG가 "unused"로 잡힐 수 있다.
+  // 그래서 임시로 참조만 만들어 lint/TS 경고를 막는다.
+  // 나중에 버튼을 다시 연결(onClick={exportPNG})하면 이 줄은 삭제해도 된다.
+  void exportPNG;
+
   const addImageToCanvas = (imageSrc: string) => {
     // imageSrc를 string으로 제한해 fromURL 입력 타입을 명확히 한다.
     const c = canvasRef.current as unknown as Canvas | null;
