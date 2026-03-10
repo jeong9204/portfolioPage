@@ -416,9 +416,9 @@
   }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 425px) {
   .primaryButtons {
-    // 375px 이하에서는 버튼 가독성을 위해 2열로 전환한다.
+    // 425px 이하(iPhone 16 Pro 포함)에서는 버튼 가독성을 위해 2열로 전환한다.
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
