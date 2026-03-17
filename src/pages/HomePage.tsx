@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import CoverHero from "../components/hero/CoverHero";
+import SiteFooter from "../components/layout/SiteFooter";
 import SiteHeader from "../components/layout/SiteHeader";
 import loginimg from "../assets/portfolio-images/loginpage.png";
 import writerimg from "../assets/portfolio-images/writerpage.png";
@@ -321,6 +322,7 @@ export default function HomePage() {
         // 로고 클릭 시 항상 Main 섹션으로 복귀한다.
         onLogoClick={() => setSectionIndex(0)}
       />
+      <SiteFooter />
       <div
         className={styles.track}
         style={{ transform: `translateY(-${sectionIndex * 100}svh)` }}

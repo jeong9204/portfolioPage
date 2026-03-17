@@ -73,6 +73,21 @@
   background: transparent;
 }
 
+@media (min-width: 769px) {
+  .nextSection,
+  .portfolioSection {
+    // 고정 푸터(아이콘 바)에 콘텐츠가 가리지 않도록 하단 여유를 추가한다.
+    padding-bottom: calc(24px + 56px);
+  }
+
+  .nextInner {
+    // 고정 높이 섹션에서 콘텐츠가 길어질 때 내부 스크롤로 읽을 수 있게 유지한다.
+    max-height: calc(100svh - var(--header-height) - 24px - 56px - 24px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 .portfolioTitle {
   margin: 0 0 10px;
   font-size: clamp(26px, 4.4vw, 44px);
