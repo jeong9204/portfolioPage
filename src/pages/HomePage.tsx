@@ -9,6 +9,7 @@ import publishingimg1 from "../assets/portfolio-images/publishingpage1.png";
 import publishingimg2 from "../assets/portfolio-images/publishingpage2.png";
 import writervideo from "../assets/videos/writerpagevideo.mp4";
 import mainvideo from "../assets/videos/mainpagevideo.mp4";
+import algoimg from "../assets/portfolio-images/algoimg.png";
 import styles from "./HomePage.module.scss";
 
 // 초기 테마 판별 유틸.
@@ -48,6 +49,17 @@ const getPortfolioItemById = (id: string | null) =>
 const PORTFOLIO_ITEMS = [
   {
     id: "Project-01",
+    title: "알고리즘 회상 기반 학습 관리 서비스",
+    description:
+      "알고리즘 문제 풀이 후 시간이 지나면 풀이 아이디어를 잊어버리는 문제를 해결하기 위해, '회상(Recall) 중심 학습' 프로세스를 직접 설계하고 구현한 프로젝트입니다.",
+    type: "image",
+    src: algoimg,
+    // 실제 배포 링크가 생기면 URL만 교체하면 된다.
+    link: "https://algo-review-system.vercel.app/",
+    linkLabel: "이용해보기",
+  },
+  {
+    id: "Project-02",
     title: "Google·Facebook 소셜 로그인",
     description:
       "Google·Facebook 소셜 로그인을 OAuth 기반으로 연동하고, 웹·앱 환경을 고려한 인증 플로우 및 앱 브릿지를 포함해 계정 연결·해제 전반의 인증 라이프사이클을 관리했습니다.",
@@ -58,7 +70,7 @@ const PORTFOLIO_ITEMS = [
     linkLabel: "로그인페이지 보기",
   },
   {
-    id: "Project-02",
+    id: "Project-03",
     title: "작품 표지관리",
     description:
       "기존 단순 이미지 업로드 방식의 표현 한계를 개선하기 위해, Fabric.js와 react-image-crop을 활용한 작품 표지 제작 페이지를 개발하고 이미지 편집·텍스트 추가 등 사용자 주도의 편집 인터랙션을 구현했습니다.",
@@ -69,7 +81,7 @@ const PORTFOLIO_ITEMS = [
     linkLabel: "사용중인 표지 리스트 보기",
   },
   {
-    id: "Project-03",
+    id: "Project-04",
     title: "메인화면 리뉴얼",
     description:
       "리뉴얼 과정에서 UI 구조 변경으로 인한 재작업을 줄이기 위해, 초기 단계에서 React 기반 UI 컴포넌트 구조를 설계하고 퍼블리싱·반응형·다크모드 대응을 선행 구축하여 확장성과 유지보수가 용이한 UI 구조를 마련했습니다.",
@@ -80,7 +92,7 @@ const PORTFOLIO_ITEMS = [
     linkLabel: "홈페이지 보기",
   },
   {
-    id: "Project-04",
+    id: "Project-05",
     title: "퍼블리싱 홈페이지1",
     description: "한양대학교 발달의학센터",
     type: "image",
@@ -89,7 +101,7 @@ const PORTFOLIO_ITEMS = [
     linkLabel: "홈페이지 보기",
   },
   {
-    id: "Project-05",
+    id: "Project-06",
     title: "퍼블리싱 홈페이지2",
     description: "(주)유성소프트",
     type: "image",
