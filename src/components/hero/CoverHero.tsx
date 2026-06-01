@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { fabric } from "fabric";
 import type {
   Canvas,
@@ -72,6 +72,7 @@ export default function CoverHero({
   isDark,
   isActive = true,
 }: CoverHeroProps) {
+  const imageTooltipId = useId();
   // DOM 요소 ref 타입을 명시하면 .current 사용 시 자동완성이 정확해지고,
   // null 체크가 강제되어 런타임 오류를 줄일 수 있다.
   const canvasElRef = useRef<HTMLCanvasElement | null>(null);
@@ -92,6 +93,10 @@ export default function CoverHero({
   const [preset, setPreset] = useState<PresetKey>("ux");
   // 메인 배지 클릭 시 바텀시트 형태의 소개 팝업을 연다.
   const [isProfileSheetOpen, setIsProfileSheetOpen] = useState(false);
+  const [isImageTooltipVisible, setIsImageTooltipVisible] = useState(true);
+  const dismissImageTooltip = () => {
+    setIsImageTooltipVisible(false);
+  };
 
   // fabric 내부 백버퍼 크기 대신 실제 화면에 보이는 좌표계를 반환한다.
   // 반환 객체 타입은 TS가 추론하지만, 입력 타입(Canvas)은 명시해 재사용 안정성을 높인다.
@@ -530,20 +535,53 @@ export default function CoverHero({
             </div>
 
             {IMAGE_ASSETS.length > 0 && (
-              <div className={styles.imageButtons}>
-                {IMAGE_ASSETS.map((asset) => (
-                  <button
-                    key={asset.src}
-                    className={styles.imageButton}
-                    onClick={() => addImageToCanvas(asset.src)}
-                    disabled={!ready}
-                    title={asset.fileName}
-                    aria-label={`${asset.fileName} 이미지 추가`}
+              <div className={styles.imageButtonsWrap}>
+                {isImageTooltipVisible && (
+                  <div
+                    id={imageTooltipId}
+                    className={styles.imageTooltip}
+                    aria-live="polite"
                   >
-                    <img src={asset.src} alt="" />
-                    {/* <span>{asset.label}</span> */}
-                  </button>
-                ))}
+                    <span className={styles.imageTooltipLabel}>
+                      이곳을 눌러주세요
+                    </span>
+                    <button
+                      type="button"
+                      className={styles.imageTooltipClose}
+                      onClick={dismissImageTooltip}
+                      aria-label="툴팁 닫기"
+                    >
+                      x
+                    </button>
+                  </div>
+                )}
+                <div className={styles.imageButtons}>
+                  {IMAGE_ASSETS.map((asset, index) => {
+                    const isFirstImageButton = index === 0;
+
+                    return (
+                      <button
+                        key={asset.src}
+                        className={styles.imageButton}
+                        onClick={() => {
+                          dismissImageTooltip();
+                          addImageToCanvas(asset.src);
+                        }}
+                        disabled={!ready}
+                        title={asset.fileName}
+                        aria-label={`${asset.fileName} 이미지 추가`}
+                        aria-describedby={
+                          isFirstImageButton && isImageTooltipVisible
+                            ? imageTooltipId
+                            : undefined
+                        }
+                      >
+                        <img src={asset.src} alt="" />
+                        {/* <span>{asset.label}</span> */}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
