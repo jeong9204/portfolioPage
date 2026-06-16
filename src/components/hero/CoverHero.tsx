@@ -111,6 +111,7 @@ export default function CoverHero({
   useEffect(() => {
     let disposed = false;
     let cleanup: (() => void) | undefined;
+    setReady(false);
 
     // 웹폰트 로딩이 지연/실패해도 캔버스 초기화가 멈추지 않도록 타임아웃을 둔다.
     const loadFontWithTimeout = async (fontRule: string, timeoutMs: number) => {
@@ -250,7 +251,7 @@ export default function CoverHero({
       };
 
       const fitCanvasToWrap = () => {
-        const wrap = canvasWrapRef.current;
+        const wrap = canvasWrapRef.current ?? el.parentElement;
         if (!wrap) return;
 
         // 리사이즈 때만 캔버스 버퍼를 재할당해 성능 저하를 줄인다.
@@ -274,8 +275,62 @@ export default function CoverHero({
         placeTextObjects();
       };
 
+      const addInitialImages = () => {
+        const { width: canvasWidth, height: canvasHeight } =
+          getVisibleCanvasSize(c as unknown as Canvas);
+        if (!canvasWidth || !canvasHeight) return;
+
+        const isMobile = canvasWidth <= 768;
+        const desktopPlacements = [
+          { left: 0.72, top: 0.28, angle: 5 },
+          { left: 0.26, top: 0.34, angle: -8 },
+          { left: 0.68, top: 0.68, angle: -3 },
+          { left: 0.42, top: 0.58, angle: 7 },
+        ];
+        const mobilePlacements = [
+          { left: 0.76, top: 0.27, angle: 5 },
+          { left: 0.28, top: 0.48, angle: -8 },
+        ];
+        const placements = isMobile ? mobilePlacements : desktopPlacements;
+        const assets = IMAGE_ASSETS.slice(0, isMobile ? 2 : 4);
+
+        assets.forEach((asset, index) => {
+          fabric.Image.fromURL(asset.src, (img: FabricImage) => {
+            if (!img || disposed) return;
+
+            const placement = placements[index] ?? placements[0];
+            const maxW = canvasWidth * (isMobile ? 0.2 : 0.18);
+            const maxH = canvasHeight * (isMobile ? 0.2 : 0.24);
+            const iw = img.width || 1;
+            const ih = img.height || 1;
+            const scale = Math.min(maxW / iw, maxH / ih, 1);
+
+            img.set({
+              left: canvasWidth * placement.left,
+              top: canvasHeight * placement.top,
+              originX: "center",
+              originY: "center",
+              angle: placement.angle,
+              scaleX: scale,
+              scaleY: scale,
+              cornerStyle: "circle",
+              cornerSize: 10,
+              transparentCorners: false,
+            });
+
+            c.add(img);
+            if (title) c.bringToFront(title);
+            if (subtitle) c.bringToFront(subtitle);
+            c.requestRenderAll();
+          });
+        });
+      };
+
       layoutRef.current = placeTextObjects;
-      fitCanvasToWrap();
+      window.requestAnimationFrame(() => {
+        fitCanvasToWrap();
+        addInitialImages();
+      });
       window.addEventListener("resize", fitCanvasToWrap);
       setReady(true);
 
@@ -290,10 +345,13 @@ export default function CoverHero({
       };
     };
 
-    void init();
+    const initTimer = window.setTimeout(() => {
+      void init();
+    }, 0);
 
     return () => {
       disposed = true;
+      window.clearTimeout(initTimer);
       cleanup?.();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

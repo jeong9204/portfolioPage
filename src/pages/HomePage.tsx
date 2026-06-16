@@ -35,6 +35,16 @@ type PortfolioItem = {
   linkLabel?: string;
 };
 
+type ExperienceItem = {
+  id: string;
+  company: string;
+  roles: {
+    period: string;
+    title: string;
+  }[];
+  works: string[];
+};
+
 const SECTION_HASHES = ["#main", "#experience", "#portfolio"] as const;
 
 const getSectionIndexFromHash = (hash: string) => {
@@ -45,6 +55,45 @@ const getSectionIndexFromHash = (hash: string) => {
 
 const getPortfolioItemById = (id: string | null) =>
   id ? (PORTFOLIO_ITEMS.find((item) => item.id === id) ?? null) : null;
+
+const EXPERIENCE_ITEMS = [
+  {
+    id: "joara",
+    company: "(주)조아라",
+    roles: [
+      {
+        period: "2022.11 - 2026.01 (3년 3개월)",
+        title: "Frontend Developer",
+      },
+    ],
+    works: [
+      "Google·Facebook 소셜 로그인을 OAuth 기반으로 연동하고, 웹·앱 환경을 고려한 인증 플로우 및 앱 브릿지를 포함해 계정 연결·해제 전반의 인증 라이프사이클을 관리했습니다.",
+      "기존 단순 이미지 업로드 방식의 표현 한계를 개선하기 위해, Fabric.js와 react-image-crop을 활용한 작품 표지 제작 페이지를 개발하고 이미지 편집·텍스트 추가 등 사용자 주도의 편집 인터랙션을 구현했습니다.",
+      "반복 사용되는 아이콘으로 인한 CDN 비용 증가 문제를 해결하기 위해 아이콘 리소스를 스프라이트 이미지로 통합하고 CSS background-image 방식으로 적용하여, CloudFront 및 cf-image 평균 비용을 50% 이상 절감했습니다.",
+      "리뉴얼 과정에서 UI 구조 변경으로 인한 재작업을 줄이기 위해, 초기 단계에서 React 기반 UI 컴포넌트 구조를 설계하고 퍼블리싱·반응형·다크모드 대응을 선행 구축하여 확장성과 유지보수가 용이한 UI 구조를 마련했습니다.",
+    ],
+  },
+  {
+    id: "threeany",
+    company: "주식회사쓰리애니아이앤시",
+    roles: [
+      {
+        period: "2019.05 - 2022.04 (3년)",
+        title: "Web Publisher",
+      },
+      {
+        period: "2014.11 - 2019.03 (4년 5개월)",
+        title: "Web Publisher",
+      },
+    ],
+    works: [
+      "웹·모바일 환경에서 적응형·반응형 UI 퍼블리싱을 수행하고 크로스브라우징 대응을 진행했습니다.",
+      "유지보수 업무를 통해 기존 코드를 분석하고 기능 수정 및 개선을 수행했습니다.",
+      "고객과의 직접 커뮤니케이션을 통해 요구사항을 구조화하고 기능을 정의했습니다.",
+      "디자이너 경험을 기반으로 UI 수정 사항을 시각적·구조적으로 반영했습니다.",
+    ],
+  },
+] as const satisfies readonly ExperienceItem[];
 
 const PORTFOLIO_ITEMS = [
   {
@@ -125,6 +174,9 @@ export default function HomePage() {
   });
   // 다크 여부를 boolean 상태로 유지해 스타일 토큰 분기와 직접 연결한다.
   const [isDark, setIsDark] = useState(getInitialTheme);
+  const [activeExperienceId, setActiveExperienceId] = useState<
+    (typeof EXPERIENCE_ITEMS)[number]["id"]
+  >(EXPERIENCE_ITEMS[0].id);
 
   // ref는 렌더를 유발하지 않는 값 저장소이므로,
   // 휠 이벤트 누적/락 제어처럼 고빈도 값에 적합하다.
@@ -145,6 +197,9 @@ export default function HomePage() {
       return getPortfolioItemById(mediaFromQuery);
     },
   );
+  const activeExperience =
+    EXPERIENCE_ITEMS.find((item) => item.id === activeExperienceId) ??
+    EXPERIENCE_ITEMS[0];
 
   const moveToNext = useCallback(() => {
     setSectionIndex((prev) => Math.min(prev + 1, 2));
@@ -352,77 +407,41 @@ export default function HomePage() {
         >
           <div className={styles.nextInner} data-scrollable="true">
             <p className={styles.kicker}>Experience</p>
-            <ul className={styles.experienceList}>
-              <li>
-                <div className={styles.box}>
-                  <div className={styles.name}>(주)조아라</div>
-                  <div className={styles.title}>
-                    <div className={styles.year}>
-                      2022.11 - 2026.01 (3년 3개월)
-                    </div>
-                    <span>Frontend Developer</span>
+            <div className={styles.experiencePanel}>
+              <div className={styles.companyButtons} aria-label="회사 선택">
+                {EXPERIENCE_ITEMS.map((item) => (
+                  <button
+                    key={item.id}
+                    className={`${styles.companyButton} ${
+                      activeExperience.id === item.id
+                        ? styles.companyButtonActive
+                        : ""
+                    }`}
+                    type="button"
+                    aria-pressed={activeExperience.id === item.id}
+                    onClick={() => setActiveExperienceId(item.id)}
+                  >
+                    {item.company}
+                  </button>
+                ))}
+              </div>
+              <div className={styles.experienceContent}>
+                {activeExperience.roles.map((role) => (
+                  <div
+                    className={styles.experienceMeta}
+                    key={`${activeExperience.id}-${role.period}`}
+                  >
+                    <div>{role.period}</div>
+                    <span>{role.title}</span>
                   </div>
-                  <p className={styles.dot}>
-                    - Google·Facebook 소셜 로그인을 OAuth 기반으로 연동하고,
-                    웹·앱 환경을 고려한 인증 플로우 및 앱 브릿지를 포함해 계정
-                    연결·해제 전반의 인증 라이프사이클을 관리했습니다.
+                ))}
+                {activeExperience.works.map((work) => (
+                  <p className={styles.dot} key={work}>
+                    - {work}
                   </p>
-                  <p className={styles.dot}>
-                    - 기존 단순 이미지 업로드 방식의 표현 한계를 개선하기 위해,
-                    Fabric.js와 react-image-crop을 활용한 작품 표지 제작
-                    페이지를 개발하고
-                    <br />
-                    이미지 편집·텍스트 추가 등 사용자 주도의 편집 인터랙션을
-                    구현했습니다.
-                  </p>
-                  <p className={styles.dot}>
-                    - 반복 사용되는 아이콘으로 인한 CDN 비용 증가 문제를
-                    해결하기 위해 아이콘 리소스를 스프라이트 이미지로 통합하고
-                    CSS background-image 방식으로 적용하여,
-                    <br />
-                    CloudFront 및 cf-image 평균 비용을 50% 이상 절감했습니다.
-                  </p>
-                  <p className={styles.dot}>
-                    - 리뉴얼 과정에서 UI 구조 변경으로 인한 재작업을 줄이기
-                    위해, 초기 단계에서 React 기반 UI 컴포넌트 구조를 설계하고
-                    <br />
-                    퍼블리싱·반응형·다크모드 대응을 선행 구축하여 확장성과
-                    유지보수가 용이한 UI 구조를 마련했습니다.
-                  </p>
-                </div>
-              </li>
-              <li>
-                <div className={styles.box}>
-                  <div className={styles.name}>주식회사쓰리애니아이앤시</div>
-                  <div className={styles.title}>
-                    <div className={styles.year}>2019.05 - 2022.04 (3년)</div>
-                    <span>Web Publisher</span>
-                  </div>
-                  <div className={styles.title}>
-                    <div className={styles.year}>
-                      2014.11 - 2019.03 (4년 5개월)
-                    </div>
-                    <span>Web Publisher</span>
-                  </div>
-                  <p className={styles.dot}>
-                    - 웹·모바일 환경에서 적응형·반응형 UI 퍼블리싱을 수행하고
-                    크로스브라우징 대응을 진행했습니다.
-                  </p>
-                  <p className={styles.dot}>
-                    - 유지보수 업무를 통해 기존 코드를 분석하고 기능 수정 및
-                    개선을 수행했습니다.
-                  </p>
-                  <p className={styles.dot}>
-                    - 고객과의 직접 커뮤니케이션을 통해 요구사항을 구조화하고
-                    기능을 정의했습니다.
-                  </p>
-                  <p className={styles.dot}>
-                    - 디자이너 경험을 기반으로 UI 수정 사항을 시각적·구조적으로
-                    반영했습니다.
-                  </p>
-                </div>
-              </li>
-            </ul>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
