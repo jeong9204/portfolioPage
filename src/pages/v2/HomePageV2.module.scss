@@ -19,8 +19,10 @@
 .track {
   position: relative;
   height: 300svh;
-  transform: translateY(0);
-  transition: transform 0.68s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.58s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .topContact {
@@ -587,6 +589,7 @@
   width: 100%;
   min-height: 100svh;
   overflow: hidden;
+  contain: layout paint;
 }
 
 .portfolioPanel {
@@ -594,6 +597,7 @@
   min-height: inherit;
   overflow: hidden;
   color: #111;
+  transform: translateZ(0);
 }
 
 .portfolioHeader {
@@ -673,6 +677,8 @@
   padding: 0;
   transition: transform 0.58s cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 .portfolioTrackDragging {
@@ -692,6 +698,7 @@
   transform: translateY(0);
   transition:
     transform 0.28s ease;
+  contain: layout paint style;
 }
 
 .portfolioCardActive {
@@ -710,6 +717,7 @@
   background: #fff;
   box-shadow: none;
   transform: none;
+  contain: paint;
 
   img {
     display: block;
@@ -718,6 +726,8 @@
     object-fit: cover;
     object-position: center top;
     transition: object-position 4.4s ease-in-out;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
   &::after {

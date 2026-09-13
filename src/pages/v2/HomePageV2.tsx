@@ -314,6 +314,9 @@ const getLoopedIndex = (index: number) =>
   ((index % PORTFOLIO_ITEMS.length) + PORTFOLIO_ITEMS.length) %
   PORTFOLIO_ITEMS.length;
 
+const shouldRenderPortfolioMedia = (virtualIndex: number, activeIndex: number) =>
+  Math.abs(virtualIndex - activeIndex) <= 4;
+
 export default function HomePageV2() {
   const mainRef = useRef<HTMLElement | null>(null);
   const canvasElRef = useRef<HTMLCanvasElement | null>(null);
@@ -447,6 +450,43 @@ export default function HomePageV2() {
       window.removeEventListener("resize", updatePortfolioViewport);
     };
   }, []);
+
+  useEffect(() => {
+    const preloadPortfolioImages = () => {
+      const nearbyItems = LOOPED_PORTFOLIO_ITEMS.filter(({ virtualIndex }) =>
+        shouldRenderPortfolioMedia(virtualIndex, activePortfolioIndex),
+      );
+
+      nearbyItems.forEach(({ item }) => {
+        const src = item.type === "video" ? item.poster : item.src;
+        if (!src) return;
+
+        const image = new Image();
+        image.decoding = "async";
+        image.src = src;
+      });
+    };
+
+    let idleCallback: number | null = null;
+    let timeoutId: number | null = null;
+
+    if (typeof window.requestIdleCallback === "function") {
+      idleCallback = window.requestIdleCallback(preloadPortfolioImages);
+    } else {
+      timeoutId = window.setTimeout(preloadPortfolioImages, 120);
+    }
+
+    return () => {
+      if (
+        idleCallback !== null &&
+        typeof window.cancelIdleCallback === "function"
+      ) {
+        window.cancelIdleCallback(idleCallback);
+        return;
+      }
+      if (timeoutId !== null) window.clearTimeout(timeoutId);
+    };
+  }, [activePortfolioIndex]);
 
   const addImageToCanvas = (imageSrc: string) => {
     const canvas = canvasRef.current;
@@ -781,7 +821,9 @@ export default function HomePageV2() {
 
       <div
         className={styles.track}
-        style={{ transform: `translateY(-${sectionIndex * 100}svh)` }}
+        style={{
+          transform: `translate3d(0, -${sectionIndex * 100}svh, 0)`,
+        }}
       >
         <section id="main" className={styles.heroSection} aria-label="Main">
           <div className={styles.heroShell}>
@@ -1010,45 +1052,56 @@ export default function HomePageV2() {
                   }}
                 >
                   {LOOPED_PORTFOLIO_ITEMS.map(
-                    ({ item, virtualIndex }) => (
-                      <article
-                        key={virtualIndex}
-                        className={`${styles.portfolioCard} ${
-                          activePortfolioIndex === virtualIndex
-                            ? styles.portfolioCardActive
-                            : ""
-                        }`}
-                        onPointerDownCapture={() => {
-                          portfolioPressedItemRef.current = {
-                            item,
-                            virtualIndex,
-                          };
-                        }}
-                      >
-                        <div className={styles.portfolioCopy}>
-                          <h2>{item.title}</h2>
-                          <span>{item.description}</span>
-                          {/* <p>{item.id}</p> */}
-                        </div>
-                        <div className={styles.portfolioMedia}>
-                          {item.src ? (
-                            <img
-                              src={
-                                item.type === "video"
-                                  ? (item.poster ?? item.src)
-                                  : item.src
-                              }
-                              alt={item.title}
-                              draggable={false}
-                            />
-                          ) : (
-                            <div className={styles.portfolioBlank}>
-                              {item.id}
-                            </div>
-                          )}
-                        </div>
-                      </article>
-                    ),
+                    ({ item, virtualIndex }) => {
+                      const shouldRenderMedia = shouldRenderPortfolioMedia(
+                        virtualIndex,
+                        activePortfolioIndex,
+                      );
+                      const imageSrc =
+                        item.type === "video" ? (item.poster ?? item.src) : item.src;
+
+                      return (
+                        <article
+                          key={virtualIndex}
+                          className={`${styles.portfolioCard} ${
+                            activePortfolioIndex === virtualIndex
+                              ? styles.portfolioCardActive
+                              : ""
+                          }`}
+                          onPointerDownCapture={() => {
+                            portfolioPressedItemRef.current = {
+                              item,
+                              virtualIndex,
+                            };
+                          }}
+                        >
+                          <div className={styles.portfolioCopy}>
+                            <h2>{item.title}</h2>
+                            <span>{item.description}</span>
+                            {/* <p>{item.id}</p> */}
+                          </div>
+                          <div className={styles.portfolioMedia}>
+                            {shouldRenderMedia && imageSrc ? (
+                              <img
+                                src={imageSrc}
+                                alt={item.title}
+                                draggable={false}
+                                loading={
+                                  activePortfolioIndex === virtualIndex
+                                    ? "eager"
+                                    : "lazy"
+                                }
+                                decoding="async"
+                              />
+                            ) : (
+                              <div className={styles.portfolioBlank}>
+                                {item.id}
+                              </div>
+                            )}
+                          </div>
+                        </article>
+                      );
+                    },
                   )}
                 </div>
               </div>
