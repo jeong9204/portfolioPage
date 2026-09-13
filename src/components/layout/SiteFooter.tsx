@@ -3,8 +3,7 @@ import styles from "./SiteFooter.module.scss";
 const CONTACT_LINKS = {
   email: "mailto:jeong9204@gmail.com",
   github: "https://github.com/jeong9204",
-  linkedin:
-    "https://www.linkedin.com/in/%EC%98%88%EC%A7%80-%EC%A0%95-56210924a/",
+  linkedin: "https://www.linkedin.com/in/jeong9204",
 } as const;
 
 export default function SiteFooter() {
