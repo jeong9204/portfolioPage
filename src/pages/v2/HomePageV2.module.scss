@@ -619,7 +619,7 @@
 
   nav {
     position: absolute;
-    top: clamp(20px, 2.8vw, 34px);
+    top: clamp(44px, 4.8vw, 68px);
     left: 50%;
     transform: translateX(-50%);
     display: flex;
@@ -661,6 +661,7 @@
   user-select: none;
   --portfolio-slide-width: 28vw;
   --portfolio-slide-gap: 0px;
+  --portfolio-media-height: 500px;
 
   &:active {
     cursor: grabbing;
@@ -688,7 +689,9 @@
 .portfolioCard {
   position: relative;
   display: grid;
-  grid-template-rows: minmax(190px, calc(100svh - 500px)) 500px;
+  grid-template-rows:
+    minmax(190px, calc(100svh - var(--portfolio-media-height)))
+    var(--portfolio-media-height);
   flex: 0 0 var(--portfolio-slide-width);
   min-height: 100%;
   opacity: 1;
@@ -1017,7 +1020,7 @@
     padding: 18px 16px 0;
 
     nav {
-      top: 18px;
+      top: 72px;
       left: 50%;
       width: min(340px, 72vw);
       justify-content: flex-start;
@@ -1030,12 +1033,18 @@
     }
   }
 
+  .portfolioSlider {
+    --portfolio-media-height: 42svh;
+  }
+
   .portfolioTrack {
     padding-bottom: 0;
   }
 
   .portfolioCard {
-    grid-template-rows: minmax(170px, calc(100svh - 500px)) 500px;
+    grid-template-rows:
+      minmax(210px, calc(100svh - var(--portfolio-media-height)))
+      var(--portfolio-media-height);
     flex-basis: 70vw;
     min-height: 100%;
   }
