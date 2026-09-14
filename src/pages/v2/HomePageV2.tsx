@@ -6,8 +6,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   type TransitionEvent as ReactTransitionEvent,
 } from "react";
-import { fabric } from "fabric";
-import type { Canvas, Image as FabricImage } from "fabric/fabric-impl";
+import type { Canvas, FabricImage } from "fabric";
 import heroImage1 from "../../assets/hero-images/KakaoTalk_Photo_2026-02-28-00-28-05.png";
 import heroImage2 from "../../assets/hero-images/KakaoTalk_Photo_2026-02-28-00-28-12.png";
 import heroImage3 from "../../assets/hero-images/KakaoTalk_Photo_2026-02-28-00-28-19.png";
@@ -15,11 +14,17 @@ import heroImage4 from "../../assets/hero-images/KakaoTalk_Photo_2026-02-28-00-2
 import algoimg from "../../assets/portfolio-images/algoimg.png";
 import aiChatbotImg from "../../assets/portfolio-images/ai-chatbot.png";
 import loginimg from "../../assets/portfolio-images/loginpage.png";
-import mainimg from "../../assets/portfolio-images/mainpage.png";
 import publishingimg1 from "../../assets/portfolio-images/publishingpage1.png";
 import publishingimg2 from "../../assets/portfolio-images/publishingpage2.png";
+import algoPreview from "../../assets/portfolio-images/previews/algoimg.jpg";
+import aiChatbotPreview from "../../assets/portfolio-images/previews/ai-chatbot.jpg";
+import loginPreview from "../../assets/portfolio-images/previews/loginpage.jpg";
+import mainPreview from "../../assets/portfolio-images/previews/mainpage.jpg";
+import publishingPreview1 from "../../assets/portfolio-images/previews/publishingpage1.jpg";
+import publishingPreview2 from "../../assets/portfolio-images/previews/publishingpage2.jpg";
+import studyPagePreview from "../../assets/portfolio-images/previews/study-page.jpg";
+import writerPreview from "../../assets/portfolio-images/previews/writerpage.jpg";
 import studyPageImg from "../../assets/portfolio-images/study-page.png";
-import writerimg from "../../assets/portfolio-images/writerpage.png";
 import mainvideo from "../../assets/videos/mainpagevideo.mp4";
 import writervideo from "../../assets/videos/writerpagevideo.mp4";
 import styles from "./HomePageV2.module.scss";
@@ -50,6 +55,7 @@ type PortfolioItem = {
   description: string;
   type: "image" | "video";
   src?: string;
+  previewSrc?: string;
   poster?: string;
   link?: string;
   linkLabel?: string;
@@ -224,6 +230,7 @@ const PORTFOLIO_ITEMS: PortfolioItem[] = [
       "Next.js App Router와 TypeScript 기반으로 Anthropic Claude API를 연동해 사용자와 캐릭터 간 대화를 구현하고, 감정 상태와 시간 경과에 따라 관계 변화가 드러나도록 설계한 AI 챗봇 프로토타입입니다.",
     type: "image",
     src: aiChatbotImg,
+    previewSrc: aiChatbotPreview,
     link: "https://ai-lover-silk.vercel.app/",
     linkLabel: "서비스 보기",
   },
@@ -234,6 +241,7 @@ const PORTFOLIO_ITEMS: PortfolioItem[] = [
       "AI와 대화하며 학습한 TypeScript·Next.js 내용을 웹 기반 학습 콘텐츠로 구조화하고, 개념 설명과 코드 예제, 단계별 문제 풀이를 연결해 복습할 수 있도록 만든 반응형 학습 페이지입니다.",
     type: "image",
     src: studyPageImg,
+    previewSrc: studyPagePreview,
     link: "https://typescript-next-study-page.vercel.app/",
     linkLabel: "학습 페이지 보기",
   },
@@ -244,6 +252,7 @@ const PORTFOLIO_ITEMS: PortfolioItem[] = [
       "알고리즘 문제 풀이 후 시간이 지나면 풀이 아이디어를 잊어버리는 문제를 해결하기 위해, '회상(Recall) 중심 학습' 프로세스를 직접 설계하고 구현한 프로젝트입니다.",
     type: "image",
     src: algoimg,
+    previewSrc: algoPreview,
     link: "https://algo-review-system.vercel.app/",
     linkLabel: "이용해보기",
   },
@@ -254,6 +263,7 @@ const PORTFOLIO_ITEMS: PortfolioItem[] = [
       "Google·Facebook 소셜 로그인을 OAuth 기반으로 연동하고, 웹·앱 환경을 고려한 인증 플로우 및 앱 브릿지를 포함해 계정 연결·해제 전반의 인증 라이프사이클을 관리했습니다.",
     type: "image",
     src: loginimg,
+    previewSrc: loginPreview,
     link: "https://www.joara.com/auth/login?return_url=%2Fmain%2Frecommend",
     linkLabel: "로그인페이지 보기",
   },
@@ -264,7 +274,8 @@ const PORTFOLIO_ITEMS: PortfolioItem[] = [
       "기존 단순 이미지 업로드 방식의 표현 한계를 개선하기 위해, Fabric.js와 react-image-crop을 활용한 작품 표지 제작 페이지를 개발하고 이미지 편집·텍스트 추가 등 사용자 주도의 편집 인터랙션을 구현했습니다.",
     type: "video",
     src: writervideo,
-    poster: writerimg,
+    poster: writerPreview,
+    previewSrc: writerPreview,
     link: "https://www.joara.com/latestbooks?store=series&orderby=redate",
     linkLabel: "사용중인 표지 리스트 보기",
   },
@@ -275,7 +286,8 @@ const PORTFOLIO_ITEMS: PortfolioItem[] = [
       "리뉴얼 과정에서 UI 구조 변경으로 인한 재작업을 줄이기 위해, 초기 단계에서 React 기반 UI 컴포넌트 구조를 설계하고 퍼블리싱·반응형·다크모드 대응을 선행 구축하여 확장성과 유지보수가 용이한 UI 구조를 마련했습니다.",
     type: "video",
     src: mainvideo,
-    poster: mainimg,
+    poster: mainPreview,
+    previewSrc: mainPreview,
     link: "https://www.joara.com/",
     linkLabel: "홈페이지 보기",
   },
@@ -285,7 +297,8 @@ const PORTFOLIO_ITEMS: PortfolioItem[] = [
     description: "한양대학교 발달의학센터",
     type: "image",
     src: publishingimg1,
-    link: "http://dmc.hyumc.com/index.php",
+    previewSrc: publishingPreview1,
+    link: "https://dmc.hyumc.com/index.php",
     linkLabel: "홈페이지 보기",
   },
   {
@@ -294,6 +307,7 @@ const PORTFOLIO_ITEMS: PortfolioItem[] = [
     description: "(주)유성소프트",
     type: "image",
     src: publishingimg2,
+    previewSrc: publishingPreview2,
     link: "https://ussoft.co.kr/index.php",
     linkLabel: "홈페이지 보기",
   },
@@ -317,12 +331,15 @@ const getLoopedIndex = (index: number) =>
 const shouldRenderPortfolioMedia = (virtualIndex: number, activeIndex: number) =>
   Math.abs(virtualIndex - activeIndex) <= 4;
 
+type FabricRuntime = Pick<typeof import("fabric"), "FabricImage">;
+
 export default function HomePageV2() {
   const mainRef = useRef<HTMLElement | null>(null);
   const canvasElRef = useRef<HTMLCanvasElement | null>(null);
   const canvasWrapRef = useRef<HTMLDivElement | null>(null);
   const receiptScrollRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<Canvas | null>(null);
+  const fabricModuleRef = useRef<FabricRuntime | null>(null);
   const wheelLockRef = useRef(false);
   const wheelReleaseTimerRef = useRef<number | null>(null);
   const touchStartYRef = useRef<number | null>(null);
@@ -357,85 +374,105 @@ export default function HomePageV2() {
     const canvasEl = canvasElRef.current;
     if (!canvasEl) return;
     let disposed = false;
+    let cleanup: (() => void) | undefined;
 
-    const canvas = new fabric.Canvas(canvasEl, {
-      preserveObjectStacking: true,
-      selection: true,
-      backgroundColor: "rgba(0, 0, 0, 0)",
-    }) as unknown as Canvas;
-
-    canvasRef.current = canvas;
-
-    const fitCanvas = () => {
+    void import("fabric").then(({ Canvas: FabricCanvas, FabricImage }) => {
       if (disposed) return;
-      const wrap = canvasWrapRef.current;
-      if (!wrap) return;
 
-      const rect = wrap.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const width = Math.max(280, Math.floor(rect.width));
-      const height = Math.max(280, Math.floor(rect.height));
+      fabricModuleRef.current = { FabricImage };
 
-      canvasEl.width = Math.floor(width * dpr);
-      canvasEl.height = Math.floor(height * dpr);
-      canvasEl.style.width = `${width}px`;
-      canvasEl.style.height = `${height}px`;
-
-      canvas.setWidth(Math.floor(width * dpr));
-      canvas.setHeight(Math.floor(height * dpr));
-      canvas.setZoom(dpr);
-      canvas.requestRenderAll();
-    };
-
-    const addInitialImage = (imageSrc: string, index: number) => {
-      fabric.Image.fromURL(imageSrc, (image: FabricImage) => {
-        if (disposed || canvasRef.current !== canvas) return;
-
-        const zoom = canvas.getZoom?.() || 1;
-        const canvasWidth = canvas.getWidth() / zoom;
-        const canvasHeight = canvas.getHeight() / zoom;
-        const imageWidth = image.width || 1;
-        const imageHeight = image.height || 1;
-        const maxWidth = canvasWidth * randomInRange(0.12, 0.2);
-        const maxHeight = canvasHeight * randomInRange(0.12, 0.22);
-        const scale = Math.min(maxWidth / imageWidth, maxHeight / imageHeight, 1);
-        const imageRenderedWidth = imageWidth * scale;
-        const imageRenderedHeight = imageHeight * scale;
-        const margin = Math.max(28, Math.min(canvasWidth, canvasHeight) * 0.06);
-
-        image.set({
-          left: randomInRange(margin + imageRenderedWidth / 2, canvasWidth - margin),
-          top: randomInRange(margin + imageRenderedHeight / 2, canvasHeight - margin),
-          originX: "center",
-          originY: "center",
-          angle: randomInRange(-16, 16),
-          scaleX: scale,
-          scaleY: scale,
-          cornerStyle: "circle",
-          cornerSize: 10,
-          transparentCorners: false,
-        });
-
-        canvas.add(image);
-        if (index === 0) canvas.setActiveObject(image);
-        canvas.requestRenderAll();
+      const canvas = new FabricCanvas(canvasEl, {
+        preserveObjectStacking: true,
+        selection: true,
+        backgroundColor: "rgba(0, 0, 0, 0)",
       });
-    };
 
-    const rafId = window.requestAnimationFrame(() => {
-      if (disposed) return;
-      fitCanvas();
-      [...STICKER_IMAGES, heroImage2, heroImage4].forEach(addInitialImage);
-      setIsCanvasReady(true);
+      canvasRef.current = canvas;
+
+      const fitCanvas = () => {
+        if (disposed) return;
+        const wrap = canvasWrapRef.current;
+        if (!wrap) return;
+
+        const rect = wrap.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const width = Math.max(280, Math.floor(rect.width));
+        const height = Math.max(280, Math.floor(rect.height));
+
+        canvasEl.width = Math.floor(width * dpr);
+        canvasEl.height = Math.floor(height * dpr);
+        canvasEl.style.width = `${width}px`;
+        canvasEl.style.height = `${height}px`;
+
+        canvas.setDimensions(
+          { width: Math.floor(width * dpr), height: Math.floor(height * dpr) },
+          { backstoreOnly: true },
+        );
+        canvas.setZoom(dpr);
+        canvas.requestRenderAll();
+      };
+
+      const addInitialImage = (imageSrc: string, index: number) => {
+        void FabricImage.fromURL(imageSrc).then((image) => {
+          if (disposed || canvasRef.current !== canvas) return;
+
+          const zoom = canvas.getZoom?.() || 1;
+          const canvasWidth = canvas.getWidth() / zoom;
+          const canvasHeight = canvas.getHeight() / zoom;
+          const imageWidth = image.width || 1;
+          const imageHeight = image.height || 1;
+          const maxWidth = canvasWidth * randomInRange(0.12, 0.2);
+          const maxHeight = canvasHeight * randomInRange(0.12, 0.22);
+          const scale = Math.min(maxWidth / imageWidth, maxHeight / imageHeight, 1);
+          const imageRenderedWidth = imageWidth * scale;
+          const imageRenderedHeight = imageHeight * scale;
+          const margin = Math.max(28, Math.min(canvasWidth, canvasHeight) * 0.06);
+
+          image.set({
+            left: randomInRange(
+              margin + imageRenderedWidth / 2,
+              canvasWidth - margin,
+            ),
+            top: randomInRange(
+              margin + imageRenderedHeight / 2,
+              canvasHeight - margin,
+            ),
+            originX: "center",
+            originY: "center",
+            angle: randomInRange(-16, 16),
+            scaleX: scale,
+            scaleY: scale,
+            cornerStyle: "circle",
+            cornerSize: 10,
+            transparentCorners: false,
+          });
+
+          canvas.add(image);
+          if (index === 0) canvas.setActiveObject(image);
+          canvas.requestRenderAll();
+        });
+      };
+
+      const rafId = window.requestAnimationFrame(() => {
+        if (disposed) return;
+        fitCanvas();
+        [...STICKER_IMAGES, heroImage2, heroImage4].forEach(addInitialImage);
+        setIsCanvasReady(true);
+      });
+      window.addEventListener("resize", fitCanvas);
+
+      cleanup = () => {
+        window.cancelAnimationFrame(rafId);
+        window.removeEventListener("resize", fitCanvas);
+        canvas.dispose();
+        canvasRef.current = null;
+        fabricModuleRef.current = null;
+      };
     });
-    window.addEventListener("resize", fitCanvas);
 
     return () => {
       disposed = true;
-      window.cancelAnimationFrame(rafId);
-      window.removeEventListener("resize", fitCanvas);
-      canvas.dispose();
-      canvasRef.current = null;
+      cleanup?.();
     };
   }, []);
 
@@ -458,7 +495,7 @@ export default function HomePageV2() {
       );
 
       nearbyItems.forEach(({ item }) => {
-        const src = item.type === "video" ? item.poster : item.src;
+        const src = item.previewSrc ?? item.poster ?? item.src;
         if (!src) return;
 
         const image = new Image();
@@ -490,9 +527,10 @@ export default function HomePageV2() {
 
   const addImageToCanvas = (imageSrc: string) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const fabricModule = fabricModuleRef.current;
+    if (!canvas || !fabricModule) return;
 
-    fabric.Image.fromURL(imageSrc, (image: FabricImage) => {
+    void fabricModule.FabricImage.fromURL(imageSrc).then((image: FabricImage) => {
       if (canvasRef.current !== canvas) return;
 
       const zoom = canvas.getZoom?.() || 1;
@@ -798,7 +836,7 @@ export default function HomePageV2() {
         <a
           href={CONTACT_LINKS.github}
           target="_blank"
-          rel="noreferrer"
+          rel="noreferrer noopener"
           aria-label="GitHub 프로필 열기"
           title="GitHub"
         >
@@ -809,7 +847,7 @@ export default function HomePageV2() {
         <a
           href={CONTACT_LINKS.linkedin}
           target="_blank"
-          rel="noreferrer"
+          rel="noreferrer noopener"
           aria-label="LinkedIn 프로필 열기"
           title="LinkedIn"
         >
@@ -1058,7 +1096,10 @@ export default function HomePageV2() {
                         activePortfolioIndex,
                       );
                       const imageSrc =
-                        item.type === "video" ? (item.poster ?? item.src) : item.src;
+                        item.previewSrc ??
+                        (item.type === "video"
+                          ? (item.poster ?? item.src)
+                          : item.src);
 
                       return (
                         <article
@@ -1141,6 +1182,7 @@ export default function HomePageV2() {
                 autoPlay
                 muted
                 playsInline
+                preload="metadata"
                 onWheel={(event) => event.stopPropagation()}
               />
             ) : selectedPortfolio.src ? (

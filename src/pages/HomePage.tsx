@@ -146,7 +146,7 @@ const PORTFOLIO_ITEMS = [
     description: "한양대학교 발달의학센터",
     type: "image",
     src: publishingimg1,
-    link: "http://dmc.hyumc.com/index.php",
+    link: "https://dmc.hyumc.com/index.php",
     linkLabel: "홈페이지 보기",
   },
   {
@@ -510,6 +510,7 @@ export default function HomePage() {
                 // 자동 재생 정책 대응을 위해 초기 음소거 상태로 재생한다.
                 muted
                 playsInline
+                preload="metadata"
                 // 모달 내부 휠이 배경 섹션 전환으로 전달되지 않게 전파를 막는다.
                 onWheel={(event) => event.stopPropagation()}
               />

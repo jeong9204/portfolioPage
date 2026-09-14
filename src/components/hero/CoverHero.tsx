@@ -1,11 +1,17 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { fabric } from "fabric";
 import type {
   Canvas,
-  Image as FabricImage,
+  FabricObject,
+  FabricImage,
   Rect as FabricRect,
   Textbox,
-} from "fabric/fabric-impl";
+} from "fabric";
+import {
+  Canvas as FabricCanvas,
+  FabricImage as FabricImageClass,
+  Rect,
+  Textbox as FabricTextbox,
+} from "fabric";
 import styles from "./CoverHero.module.scss";
 
 // PresetKey를 유니온 타입으로 고정하면,
@@ -139,7 +145,7 @@ export default function CoverHero({
       ]);
       if (disposed) return;
 
-      const c = new fabric.Canvas(el, {
+      const c = new FabricCanvas(el, {
         selection: true,
         preserveObjectStacking: true,
         renderOnAddRemove: true,
@@ -149,7 +155,7 @@ export default function CoverHero({
       // Canvas 타입으로 잡아두면 이후 API 사용 시 타입 힌트를 받을 수 있다.
       canvasRef.current = c as unknown as Canvas;
 
-      const bg = new fabric.Rect({
+      const bg = new Rect({
         left: 0,
         top: 0,
         width: 2000,
@@ -161,10 +167,10 @@ export default function CoverHero({
       // 캔버스 배경을 투명 처리해 페이지 고정 그라데이션이 그대로 보이도록 한다.
       bg.set("fill", "rgba(0,0,0,0)");
       c.add(bg);
-      c.sendToBack(bg);
+      c.sendObjectToBack(bg);
       bgRef.current = bg as unknown as FabricRect;
 
-      const title = new fabric.Textbox(PRESETS.ux.title, {
+      const title = new FabricTextbox(PRESETS.ux.title, {
         left: 80,
         top: 120,
         width: 900,
@@ -183,7 +189,7 @@ export default function CoverHero({
         cornerColor: "rgba(255,255,255,0.35)",
       });
 
-      const subtitle = new fabric.Textbox(PRESETS.ux.subtitle, {
+      const subtitle = new FabricTextbox(PRESETS.ux.subtitle, {
         left: 80,
         top: 210,
         width: 860,
@@ -267,8 +273,10 @@ export default function CoverHero({
         el.style.width = `${wCss}px`;
         el.style.height = `${hCss}px`;
 
-        c.setWidth(nextWidth);
-        c.setHeight(nextHeight);
+        c.setDimensions(
+          { width: nextWidth, height: nextHeight },
+          { backstoreOnly: true },
+        );
         c.setZoom(dpr);
         bg.set({ left: 0, top: 0, width: nextWidth, height: nextHeight });
 
@@ -295,7 +303,7 @@ export default function CoverHero({
         const assets = IMAGE_ASSETS.slice(0, isMobile ? 2 : 4);
 
         assets.forEach((asset, index) => {
-          fabric.Image.fromURL(asset.src, (img: FabricImage) => {
+          void FabricImageClass.fromURL(asset.src).then((img: FabricImage) => {
             if (!img || disposed) return;
 
             const placement = placements[index] ?? placements[0];
@@ -319,8 +327,8 @@ export default function CoverHero({
             });
 
             c.add(img);
-            if (title) c.bringToFront(title);
-            if (subtitle) c.bringToFront(subtitle);
+            if (title) c.bringObjectToFront(title);
+            if (subtitle) c.bringObjectToFront(subtitle);
             c.requestRenderAll();
           });
         });
@@ -416,7 +424,7 @@ export default function CoverHero({
     // Reset 시에는 사용자가 추가한 이미지/오브젝트를 제거해 초기 상태로 되돌린다.
     c.getObjects().forEach((obj: unknown) => {
       // 여기서는 속성 접근 없이 비교/전달만 하므로 any 대신 unknown으로 안전하게 처리한다.
-      const canvasObject = obj as unknown;
+      const canvasObject = obj as FabricObject;
       if (canvasObject !== bg && canvasObject !== t && canvasObject !== s) {
         c.remove(canvasObject);
       }
@@ -454,7 +462,7 @@ export default function CoverHero({
       c as unknown as Canvas,
     );
     // 저장 시에는 투명 배경 대신 현재 테마에 맞는 배경색을 임시로 추가한다.
-    const exportBg = new fabric.Rect({
+    const exportBg = new Rect({
       left: 0,
       top: 0,
       width: canvasWidth,
@@ -465,7 +473,7 @@ export default function CoverHero({
     });
 
     c.add(exportBg);
-    c.sendToBack(exportBg);
+    c.sendObjectToBack(exportBg);
     c.discardActiveObject();
     c.requestRenderAll();
 
@@ -498,7 +506,7 @@ export default function CoverHero({
     // 이미지 버튼 클릭 시 랜덤 좌표에 스케일된 오브젝트로 추가한다.
     // 콜백 파라미터를 FabricImage로 명시하면 any 경고 없이
     // width/height/set 같은 이미지 API 접근이 타입 안전해진다.
-    fabric.Image.fromURL(imageSrc, (img: FabricImage) => {
+    void FabricImageClass.fromURL(imageSrc).then((img: FabricImage) => {
       if (!img) return;
 
       // 이미지 랜덤 좌표는 실제 보이는 캔버스 크기 기준으로 계산한다.
@@ -538,8 +546,8 @@ export default function CoverHero({
       // 이미지 추가 후에도 title/subtitle이 항상 최상단에 보이도록 레이어를 다시 올린다.
       const t = titleRef.current as unknown as Textbox | null;
       const s = subtitleRef.current as unknown as Textbox | null;
-      if (t) c.bringToFront(t as unknown);
-      if (s) c.bringToFront(s as unknown);
+      if (t) c.bringObjectToFront(t);
+      if (s) c.bringObjectToFront(s);
       c.setActiveObject(img);
       c.requestRenderAll();
     });

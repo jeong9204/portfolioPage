@@ -27,7 +27,7 @@ export default function SiteFooter() {
             <a
               href={CONTACT_LINKS.github}
               target="_blank"
-              rel="noreferrer"
+              rel="noreferrer noopener"
               aria-label="GitHub 프로필 열기"
               title="GitHub"
             >
@@ -40,7 +40,7 @@ export default function SiteFooter() {
             <a
               href={CONTACT_LINKS.linkedin}
               target="_blank"
-              rel="noreferrer"
+              rel="noreferrer noopener"
               aria-label="LinkedIn 프로필 열기"
               title="LinkedIn"
             >
