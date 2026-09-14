@@ -478,7 +478,7 @@ export default function HomePageV2() {
 
   useEffect(() => {
     const updatePortfolioViewport = () => {
-      setIsPortfolioMobile(window.innerWidth <= 760);
+      setIsPortfolioMobile(window.innerWidth <= 1024);
     };
 
     updatePortfolioViewport();

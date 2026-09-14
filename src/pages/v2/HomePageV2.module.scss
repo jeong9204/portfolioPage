@@ -961,6 +961,16 @@
   }
 }
 
+@media (max-width: 1024px) {
+  .portfolioSlider {
+    --portfolio-slide-width: 70vw;
+  }
+
+  .portfolioCard {
+    flex-basis: 70vw;
+  }
+}
+
 @media (max-width: 768px) {
   .heroSection,
   .experienceSection {
