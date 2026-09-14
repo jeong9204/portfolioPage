@@ -153,19 +153,40 @@
   font-weight: 700;
 }
 
-.frameHeader button {
-  pointer-events: auto;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.62);
-  font: inherit;
-  cursor: pointer;
-}
-
 .frameFooter {
   align-self: end;
   color: rgba(255, 255, 255, 0.7);
+}
+
+.heroScrollButton {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  z-index: 6;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  color: rgba(255, 255, 255, 0.84);
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  transform: translateX(-50%);
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    color: #fff;
+    transform: translate(-50%, -3px);
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.88);
+    outline-offset: 7px;
+    border-radius: 999px;
+  }
 }
 
 .isActive {

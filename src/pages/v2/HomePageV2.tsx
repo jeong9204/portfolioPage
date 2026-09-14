@@ -873,15 +873,6 @@ export default function HomePageV2() {
               <div className={styles.frameGrid} aria-hidden="true" />
               <header className={styles.frameHeader}>
                 <span>YEZZI Front-End Developer</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsReceiptGuideVisible(true);
-                    setSectionIndex(1);
-                  }}
-                >
-                  Scroll Down
-                </button>
               </header>
 
               <div className={styles.stickerTray} aria-label="스티커 이미지">
@@ -897,6 +888,18 @@ export default function HomePageV2() {
                   </button>
                 ))}
               </div>
+
+              <button
+                type="button"
+                className={styles.heroScrollButton}
+                onClick={() => {
+                  setIsReceiptGuideVisible(true);
+                  setSectionIndex(1);
+                }}
+              >
+                <span className={styles.scrollIcon} aria-hidden="true" />
+                <span className={styles.scrollGuideText}>Scroll Down</span>
+              </button>
 
               <footer className={styles.frameFooter}>
                 <span>UI Design</span>
