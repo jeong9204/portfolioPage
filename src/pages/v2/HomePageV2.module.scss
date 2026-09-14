@@ -964,9 +964,13 @@
 @media (max-width: 1024px) {
   .portfolioSlider {
     --portfolio-slide-width: 70vw;
+    --portfolio-media-height: 50svh;
   }
 
   .portfolioCard {
+    grid-template-rows:
+      minmax(210px, calc(100svh - var(--portfolio-media-height)))
+      var(--portfolio-media-height);
     flex-basis: 70vw;
   }
 }
@@ -1064,20 +1068,8 @@
     }
   }
 
-  .portfolioSlider {
-    --portfolio-media-height: 50svh;
-  }
-
   .portfolioTrack {
     padding-bottom: 0;
-  }
-
-  .portfolioCard {
-    grid-template-rows:
-      minmax(210px, calc(100svh - var(--portfolio-media-height)))
-      var(--portfolio-media-height);
-    flex-basis: 70vw;
-    min-height: 100%;
   }
 
   .portfolioMedia {
