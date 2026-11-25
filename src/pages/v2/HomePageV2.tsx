@@ -13,11 +13,13 @@ import heroImage3 from "../../assets/hero-images/KakaoTalk_Photo_2026-02-28-00-2
 import heroImage4 from "../../assets/hero-images/KakaoTalk_Photo_2026-02-28-00-28-26.png";
 import algoimg from "../../assets/portfolio-images/algoimg.png";
 import aiChatbotImg from "../../assets/portfolio-images/ai-chatbot.png";
+import leaforyImg from "../../assets/portfolio-images/leafory.png";
 import loginimg from "../../assets/portfolio-images/loginpage.png";
 import publishingimg1 from "../../assets/portfolio-images/publishingpage1.png";
 import publishingimg2 from "../../assets/portfolio-images/publishingpage2.png";
 import algoPreview from "../../assets/portfolio-images/previews/algoimg.jpg";
 import aiChatbotPreview from "../../assets/portfolio-images/previews/ai-chatbot.jpg";
+import leaforyPreview from "../../assets/portfolio-images/previews/leafory.jpg";
 import loginPreview from "../../assets/portfolio-images/previews/loginpage.jpg";
 import mainPreview from "../../assets/portfolio-images/previews/mainpage.jpg";
 import publishingPreview1 from "../../assets/portfolio-images/previews/publishingpage1.jpg";
@@ -223,6 +225,17 @@ const EXPERIENCE_ITEMS: ExperienceItem[] = [
 ];
 
 const PORTFOLIO_ITEMS: PortfolioItem[] = [
+  {
+    id: "Project-09",
+    title: "Leafory · 식물 성장 기록 서비스",
+    description:
+      "식물을 등록하고 물주기와 성장 과정을 사진 일기로 남기는 식물 관리 서비스입니다. 픽셀 아트로 꾸민 나만의 정원에서 식물과 최근 기록을 확인하고, 데이터 백업·복원과 홈 화면 설치 기능을 이용할 수 있습니다.",
+    type: "image",
+    src: leaforyImg,
+    previewSrc: leaforyPreview,
+    link: "https://leafory.vercel.app/",
+    linkLabel: "서비스 보기",
+  },
   {
     id: "Project-07",
     title: "AI 연인 대화형 서비스 프로토타입",
